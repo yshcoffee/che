@@ -21,6 +21,10 @@ import com.google.gwt.user.client.ui.Focusable;
 import com.google.gwt.user.client.ui.Label;
 import com.google.gwt.user.client.ui.RequiresResize;
 import com.google.gwt.user.client.ui.Widget;
+
+import org.eclipse.che.ide.terminal.helpers.fit.Fit;
+import org.eclipse.che.ide.util.loging.Log;
+
 import javax.validation.constraints.NotNull;
 
 /**
@@ -41,7 +45,7 @@ final class TerminalViewImpl extends Composite implements TerminalView, Focusabl
 
   private ActionDelegate delegate;
 
-  private TerminalJso terminal;
+  private Terminal terminal;
   private Element terminalElement;
 
   public TerminalViewImpl() {
@@ -55,21 +59,33 @@ final class TerminalViewImpl extends Composite implements TerminalView, Focusabl
 
   /** {@inheritDoc} */
   @Override
-  public void openTerminal(@NotNull final TerminalJso terminal) {
+  public void openTerminal(@NotNull final Terminal terminal) {
     unavailableLabel.setVisible(false);
 
     this.terminal = terminal;
     terminalElement = terminalPanel.getElement();
     terminalPanel.setVisible(true);
     terminalElement.getStyle().setProperty("opacity", "0");
+//    new Fit();
+    //Terminal.applyAddon(new Fit());
 
-    terminal.open(terminalPanel.getElement());
-    terminal.attachCustomKeyDownHandler(CustomKeyDownTerminalHandler.create());
+    new Timer() {
+      @Override
+      public void run() {
+        terminal.open(terminalPanel.getElement());
+        // terminal.attachCustomKeyDownHandler(CustomKeyDownTerminalHandler.create());
+//        Log.info(getClass(), new Fit());
+//        new Fit().fit();
+
+
+        terminalElement.getFirstChildElement().getStyle().clearProperty("backgroundColor");
+        terminalElement.getFirstChildElement().getStyle().clearProperty("color");
+        terminalElement.getStyle().clearProperty("opacity");
+      }
+    }.schedule(0);
+
+
     resizeTerminal();
-
-    terminalElement.getFirstChildElement().getStyle().clearProperty("backgroundColor");
-    terminalElement.getFirstChildElement().getStyle().clearProperty("color");
-    terminalElement.getStyle().clearProperty("opacity");
   }
 
   /** {@inheritDoc} */
@@ -82,7 +98,7 @@ final class TerminalViewImpl extends Composite implements TerminalView, Focusabl
   }
 
   /**
-   * Resize {@link TerminalJso} to current widget size. To improve performance we should resize only
+   * Resize {@link Terminal} to current widget size. To improve performance we should resize only
    * visible terminals, because "resize terminal" is quite expensive operation. When you click on
    * the tab to activate hidden terminal this method will be executed too, so terminal will be
    * resized anyway.
@@ -103,16 +119,17 @@ final class TerminalViewImpl extends Composite implements TerminalView, Focusabl
       };
 
   private void resizeTerminal() {
-    TerminalGeometryJso geometryJso = terminal.proposeGeometry();
-    int x = geometryJso.getCols();
-    int y = geometryJso.getRows();
-    if (x <= 0 || y <= 0) {
-      resizeTimer.cancel();
-      resizeTimer.schedule(500);
-      return;
-    }
 
-    delegate.setTerminalSize(x, y);
+//    TerminalGeometry geometryJso = terminal.proposeGeometry();
+//    int x = geometryJso.getCols();
+//    int y = geometryJso.getRows();
+//    if (x <= 0 || y <= 0) {
+//      resizeTimer.cancel();
+//      resizeTimer.schedule(500);
+//      return;
+//    }
+//
+//    delegate.setTerminalSize(x, y);
   }
 
   @Override

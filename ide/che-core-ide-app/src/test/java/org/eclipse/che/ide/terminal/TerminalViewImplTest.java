@@ -25,8 +25,8 @@ public class TerminalViewImplTest {
 
   private static final String SOME_TEXT = "someText";
 
-  @Mock private TerminalJso terminalJso;
-  @Mock private Element element;
+  @Mock private Terminal terminal;
+  @Mock private Element  element;
 
   @InjectMocks private TerminalViewImpl view;
 
