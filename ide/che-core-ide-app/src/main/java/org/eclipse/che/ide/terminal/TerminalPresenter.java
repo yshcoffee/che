@@ -26,10 +26,14 @@ import javax.validation.constraints.NotNull;
 import org.eclipse.che.ide.CoreLocalizationConstant;
 import org.eclipse.che.ide.api.mvp.Presenter;
 import org.eclipse.che.ide.api.notification.NotificationManager;
+import org.eclipse.che.ide.api.theme.Theme;
+import org.eclipse.che.ide.api.theme.ThemeAgent;
 import org.eclipse.che.ide.api.workspace.model.MachineImpl;
 import org.eclipse.che.ide.api.workspace.model.ServerImpl;
 import org.eclipse.che.ide.collections.Jso;
 import org.eclipse.che.ide.core.AgentURLModifier;
+import org.eclipse.che.ide.terminal.settings.TerminalOptions;
+import org.eclipse.che.ide.terminal.settings.TerminalTheme;
 import org.eclipse.che.ide.util.loging.Log;
 import org.eclipse.che.ide.websocket.WebSocket;
 
@@ -46,11 +50,12 @@ public class TerminalPresenter implements Presenter, TerminalView.ActionDelegate
   private static final String DATA_EVENT_NAME = "data";
   private static final int TIME_BETWEEN_CONNECTIONS = 2_000;
 
-  private final TerminalView view;
-  private final TerminalOptions options;
-  private final NotificationManager notificationManager;
+  private final TerminalView             view;
+  private final TerminalOptions          options;
+  private final NotificationManager      notificationManager;
   private final CoreLocalizationConstant locale;
-  private final MachineImpl machine;
+  private final MachineImpl              machine;
+  private final ThemeAgent               themeAgent;
 
   private final AgentURLModifier agentURLModifier;
 
@@ -64,14 +69,16 @@ public class TerminalPresenter implements Presenter, TerminalView.ActionDelegate
 
   @Inject
   public TerminalPresenter(
-      TerminalView view,
-      NotificationManager notificationManager,
-      CoreLocalizationConstant locale,
-      @NotNull @Assisted MachineImpl machine,
-      @Assisted TerminalOptions options,
-      AgentURLModifier agentURLModifier) {
+          TerminalView view,
+          NotificationManager notificationManager,
+          CoreLocalizationConstant locale,
+          @NotNull @Assisted MachineImpl machine,
+          @Assisted TerminalOptions options,
+          AgentURLModifier agentURLModifier,
+          ThemeAgent themeAgent) {
     this.view = view;
     this.options = options;
+    this.themeAgent = themeAgent;
     this.agentURLModifier = agentURLModifier;
     view.setDelegate(this);
     this.notificationManager = notificationManager;
@@ -123,7 +130,6 @@ public class TerminalPresenter implements Presenter, TerminalView.ActionDelegate
     socket = WebSocket.create(wsUrl);
 
     socket.setOnMessageHandler(event -> {
-      Log.info(getClass(), "message:", event.getMessage());
       terminal.write(event.getMessage());
     });
 
@@ -137,16 +143,16 @@ public class TerminalPresenter implements Presenter, TerminalView.ActionDelegate
 
     socket.setOnOpenHandler(
         () -> {
+          setUpTheme();
           terminal = new Terminal(options);
           Log.info(getClass(), terminal.getOptions().getCols(), terminal.getOptions().getRows());
           connected = true;
 
-          view.openTerminal(terminal);
+          view.setTerminal(terminal);
 
           terminal.on(
               DATA_EVENT_NAME,
               data -> {
-                Log.info(getClass(), "Send data", data);
                 Jso jso = Jso.create();
                 jso.addField("type", "data");
                 jso.addField("data", data);
@@ -169,6 +175,16 @@ public class TerminalPresenter implements Presenter, TerminalView.ActionDelegate
             reconnect();
           }
         });
+  }
+
+  private void setUpTheme() {
+    Theme theme = themeAgent.getTheme(themeAgent.getCurrentThemeId());
+    TerminalTheme terminalTheme = new TerminalTheme();
+    terminalTheme.setCursor(theme.getBlueIconColor());
+    terminalTheme.setBackGround(theme.outputBackgroundColor());
+    terminalTheme.setForeGround(theme.getOutputFontColor());
+
+    options.setTheme(terminalTheme);
   }
 
   /** Sends 'close' message on server side to stop terminal. */

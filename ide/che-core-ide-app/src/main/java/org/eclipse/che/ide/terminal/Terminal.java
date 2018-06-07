@@ -18,6 +18,7 @@ import jsinterop.annotations.JsPackage;
 import jsinterop.annotations.JsProperty;
 import jsinterop.annotations.JsType;
 import org.eclipse.che.ide.terminal.helpers.TerminalGeometry;
+import org.eclipse.che.ide.terminal.settings.TerminalOptions;
 
 
 /**
@@ -38,11 +39,11 @@ public class Terminal {
         void invoke(Object... args);
     }
 
-//    @JsFunction
-//    @FunctionalInterface
-//    public interface CustomKeyDownHandler {
-//        boolean keyDown(KeyboardEvent ev);
-//    }
+    @JsFunction
+    @FunctionalInterface
+    public interface CustomKeyEventHandler {
+        boolean onKeyDown(KeyboardEvent ev);
+    }
 
     @JsProperty(name = "options")
     public native TerminalOptions getOptions();
@@ -89,10 +90,11 @@ public class Terminal {
 
     public static native void applyAddon(Object addon);
 
-//    @JsMethod(name = "attachCustomKeydownHandler")
-//    public native void attachCustomKeyDownHandler(CustomKeyDownHandler customKeyDownHandl);
+    @JsMethod(name = "attachCustomKeyEventHandler")
+    public native void attachCustomKeyEventHandler(CustomKeyEventHandler keyHandler);
 
     public native void reset();
 
+    // todo use it!!!! any way
     public native void destroy();
 }

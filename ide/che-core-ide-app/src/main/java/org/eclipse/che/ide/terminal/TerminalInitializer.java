@@ -14,7 +14,6 @@ import com.google.gwt.core.client.ScriptInjector;
 import com.google.inject.Inject;
 import com.google.inject.Singleton;
 
-import org.eclipse.che.ide.util.loging.Log;
 import org.eclipse.che.lib.terminal.client.TerminalResources;
 import static com.google.gwt.core.client.ScriptInjector.TOP_WINDOW;
 
@@ -26,8 +25,7 @@ public class TerminalInitializer {
   public TerminalInitializer(final TerminalResources terminalResources) {
     terminalResources.getTerminalStyle().ensureInjected();
     ScriptInjector.fromString(terminalResources.xtermScript().getText()).setWindow(TOP_WINDOW).inject();
-    Log.info(getClass(), terminalResources.fitScript().getText());
     ScriptInjector.fromString(terminalResources.fitScript().getText()).setWindow(TOP_WINDOW).inject();
-    ScriptInjector.fromString(terminalResources.attachScript().getText()).setWindow(TOP_WINDOW).inject();
+//    ScriptInjector.fromString(terminalResources.attachScript().getText()).setWindow(TOP_WINDOW).inject();
   }
 }

@@ -12,6 +12,7 @@ package org.eclipse.che.ide.terminal;
 
 import com.google.inject.assistedinject.Assisted;
 import org.eclipse.che.ide.api.workspace.model.MachineImpl;
+import org.eclipse.che.ide.terminal.settings.TerminalOptions;
 
 /**
  * Special factory for creating {@link TerminalPresenter} instances.

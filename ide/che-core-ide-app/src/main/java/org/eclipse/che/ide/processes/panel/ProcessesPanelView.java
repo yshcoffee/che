@@ -16,7 +16,7 @@ import org.eclipse.che.commons.annotation.Nullable;
 import org.eclipse.che.ide.api.mvp.View;
 import org.eclipse.che.ide.api.parts.base.BaseActionDelegate;
 import org.eclipse.che.ide.processes.ProcessTreeNode;
-import org.eclipse.che.ide.terminal.TerminalOptions;
+import org.eclipse.che.ide.terminal.settings.TerminalOptions;
 import org.eclipse.che.ide.ui.multisplitpanel.SubPanel;
 import org.vectomatic.dom.svg.ui.SVGResource;
 

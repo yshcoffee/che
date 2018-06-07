@@ -37,7 +37,7 @@ import org.eclipse.che.ide.processes.ProcessDataAdapter;
 import org.eclipse.che.ide.processes.ProcessTreeNode;
 import org.eclipse.che.ide.processes.ProcessTreeRenderer;
 import org.eclipse.che.ide.processes.StopProcessHandler;
-import org.eclipse.che.ide.terminal.TerminalOptions;
+import org.eclipse.che.ide.terminal.settings.TerminalOptions;
 import org.eclipse.che.ide.ui.SplitterFancyUtil;
 import org.eclipse.che.ide.ui.multisplitpanel.SubPanel;
 import org.eclipse.che.ide.ui.multisplitpanel.SubPanelFactory;

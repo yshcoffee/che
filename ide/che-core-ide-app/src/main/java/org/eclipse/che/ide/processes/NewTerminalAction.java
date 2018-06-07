@@ -21,7 +21,7 @@ import org.eclipse.che.ide.api.action.AbstractPerspectiveAction;
 import org.eclipse.che.ide.api.action.ActionEvent;
 import org.eclipse.che.ide.machine.MachineResources;
 import org.eclipse.che.ide.processes.panel.ProcessesPanelPresenter;
-import org.eclipse.che.ide.terminal.TerminalOptions;
+import org.eclipse.che.ide.terminal.settings.TerminalOptions;
 
 /**
  * Action to open new terminal for the selected machine.

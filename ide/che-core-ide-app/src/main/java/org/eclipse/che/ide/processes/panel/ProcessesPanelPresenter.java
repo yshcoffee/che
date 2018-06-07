@@ -107,7 +107,7 @@ import org.eclipse.che.ide.processes.runtime.RuntimeInfoLocalization;
 import org.eclipse.che.ide.processes.runtime.RuntimeInfoProvider;
 import org.eclipse.che.ide.processes.runtime.RuntimeInfoWidgetFactory;
 import org.eclipse.che.ide.terminal.TerminalFactory;
-import org.eclipse.che.ide.terminal.TerminalOptions;
+import org.eclipse.che.ide.terminal.settings.TerminalOptions;
 import org.eclipse.che.ide.terminal.TerminalPresenter;
 import org.eclipse.che.ide.ui.dialogs.DialogFactory;
 import org.eclipse.che.ide.ui.dialogs.confirm.ConfirmCallback;

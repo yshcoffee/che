@@ -8,19 +8,17 @@
  * Contributors:
  *   Red Hat, Inc. - initial API and implementation
  */
-package org.eclipse.che.ide.terminal.helpers.fit;
+package org.eclipse.che.ide.terminal.addons;
 
-import jsinterop.annotations.JsFunction;
-import jsinterop.annotations.JsMethod;
 import jsinterop.annotations.JsPackage;
+import jsinterop.annotations.JsProperty;
 import jsinterop.annotations.JsType;
-
-import org.eclipse.che.ide.terminal.Terminal;
 
 /**
  * @author Alexander Andrienko
  */
-//@JsFunction
-//public interface Fit {
-//    static void apply(Terminal terminal);
-//}
+@JsType(isNative = true, namespace = JsPackage.GLOBAL, name = "window")
+public class TerminalAddonsProvider {
+    @JsProperty(name = "fit")
+    public static native Object getFitAddon();
+}

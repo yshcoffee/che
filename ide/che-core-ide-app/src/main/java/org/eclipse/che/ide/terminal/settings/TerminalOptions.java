@@ -8,12 +8,14 @@
  * Contributors:
  *   Red Hat, Inc. - initial API and implementation
  */
-package org.eclipse.che.ide.terminal;
+package org.eclipse.che.ide.terminal.settings;
 
 import jsinterop.annotations.JsIgnore;
 import jsinterop.annotations.JsPackage;
 import jsinterop.annotations.JsProperty;
 import jsinterop.annotations.JsType;
+
+import org.eclipse.che.ide.terminal.Terminal;
 
 /**
  * Terminal options. See more {@link Terminal}.
@@ -26,7 +28,7 @@ public class TerminalOptions {
     /** Default terminal options constructor */
     @JsIgnore
     public TerminalOptions() {
-        setTheme("default");
+        setTheme(new TerminalTheme());
         setConvertEol(false);
         setTermName("xterm");
         setCols(80);
@@ -43,12 +45,6 @@ public class TerminalOptions {
         setUseFlowControl(false);
         setTabStopWidth(8);
     }
-
-    @JsProperty(name = "theme")
-    public native void setTheme(String theme);
-
-    @JsProperty(name = "theme")
-    public native String getTheme();
 
     @JsProperty(name = "convertEol")
     public native void setConvertEol(boolean convertEol);
@@ -139,4 +135,10 @@ public class TerminalOptions {
 
     @JsProperty(name = "tabStopWidth")
     public native int getTabStopWidth();
+
+    @JsProperty(name = "theme")
+    public native void setTheme(TerminalTheme theme);
+
+    @JsProperty(name = "theme")
+    public native TerminalTheme getTheme();
 }
