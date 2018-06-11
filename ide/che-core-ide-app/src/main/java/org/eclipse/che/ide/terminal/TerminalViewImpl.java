@@ -22,6 +22,8 @@ import com.google.gwt.user.client.ui.Label;
 import com.google.gwt.user.client.ui.RequiresResize;
 import com.google.gwt.user.client.ui.Widget;
 import javax.validation.constraints.NotNull;
+import org.eclipse.che.ide.terminal.addons.TerminalAddonsProvider;
+import org.eclipse.che.ide.terminal.helpers.TerminalGeometry;
 
 /**
  * The class contains methods to display terminal.
@@ -41,7 +43,7 @@ final class TerminalViewImpl extends Composite implements TerminalView, Focusabl
 
   private ActionDelegate delegate;
 
-  private TerminalJso terminal;
+  private Terminal terminal;
   private Element terminalElement;
 
   public TerminalViewImpl() {
@@ -55,21 +57,14 @@ final class TerminalViewImpl extends Composite implements TerminalView, Focusabl
 
   /** {@inheritDoc} */
   @Override
-  public void openTerminal(@NotNull final TerminalJso terminal) {
+  public void setTerminal(@NotNull final Terminal terminal) {
     unavailableLabel.setVisible(false);
+    terminalPanel.setVisible(true);
+
+    Terminal.applyAddon(TerminalAddonsProvider.getFitAddon());
+    terminal.attachCustomKeyEventHandler(new CustomKeyEventTerminalHandler(terminal));
 
     this.terminal = terminal;
-    terminalElement = terminalPanel.getElement();
-    terminalPanel.setVisible(true);
-    terminalElement.getStyle().setProperty("opacity", "0");
-
-    terminal.open(terminalPanel.getElement());
-    terminal.attachCustomKeyDownHandler(CustomKeyDownTerminalHandler.create());
-    resizeTerminal();
-
-    terminalElement.getFirstChildElement().getStyle().clearProperty("backgroundColor");
-    terminalElement.getFirstChildElement().getStyle().clearProperty("color");
-    terminalElement.getStyle().clearProperty("opacity");
   }
 
   /** {@inheritDoc} */
@@ -81,17 +76,10 @@ final class TerminalViewImpl extends Composite implements TerminalView, Focusabl
     terminalPanel.setVisible(false);
   }
 
-  /**
-   * Resize {@link TerminalJso} to current widget size. To improve performance we should resize only
-   * visible terminals, because "resize terminal" is quite expensive operation. When you click on
-   * the tab to activate hidden terminal this method will be executed too, so terminal will be
-   * resized anyway.
-   */
+  /** Resize {@link Terminal} to current widget size. */
   @Override
   public void onResize() {
-    if (terminalElement != null && isVisible()) {
-      resizeTimer.schedule(200);
-    }
+    resizeTimer.schedule(200);
   }
 
   private Timer resizeTimer =
@@ -102,17 +90,23 @@ final class TerminalViewImpl extends Composite implements TerminalView, Focusabl
         }
       };
 
+  /**
+   * To improve performance we should resize only visible terminals, because "resize terminal" is
+   * quite expensive operation. When you click on the tab to activate hidden terminal this method
+   * will be executed too, so terminal will be resized anyway.
+   */
   private void resizeTerminal() {
-    TerminalGeometryJso geometryJso = terminal.proposeGeometry();
-    int x = geometryJso.getCols();
-    int y = geometryJso.getRows();
-    if (x <= 0 || y <= 0) {
-      resizeTimer.cancel();
-      resizeTimer.schedule(500);
+    if (!this.isAttached() || !this.isVisible()) {
       return;
     }
 
-    delegate.setTerminalSize(x, y);
+    if (terminalElement != null) {
+      TerminalGeometry geometry = terminal.proposeGeometry();
+      terminal.resize(geometry.getCols(), geometry.getRows());
+    } else {
+      terminal.open(terminalPanel.getElement());
+      terminalElement = terminalPanel.getElement();
+    }
   }
 
   @Override

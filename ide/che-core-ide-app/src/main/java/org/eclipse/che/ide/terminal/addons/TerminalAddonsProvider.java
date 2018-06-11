@@ -8,20 +8,15 @@
  * Contributors:
  *   Red Hat, Inc. - initial API and implementation
  */
-package org.eclipse.che.ide.terminal;
+package org.eclipse.che.ide.terminal.addons;
 
-import com.google.gwt.core.client.JavaScriptObject;
+import jsinterop.annotations.JsPackage;
+import jsinterop.annotations.JsProperty;
+import jsinterop.annotations.JsType;
 
 /** @author Alexander Andrienko */
-public class TerminalGeometryJso extends JavaScriptObject {
-
-  protected TerminalGeometryJso() {}
-
-  public final native int getCols() /*-{
-        return this.cols;
-    }-*/;
-
-  public final native int getRows() /*-{
-        return this.rows;
-    }-*/;
+@JsType(isNative = true, namespace = JsPackage.GLOBAL, name = "window")
+public class TerminalAddonsProvider {
+  @JsProperty(name = "fit")
+  public static native Object getFitAddon();
 }

@@ -12,12 +12,13 @@ package org.eclipse.che.ide.terminal;
 
 import com.google.inject.assistedinject.Assisted;
 import org.eclipse.che.ide.api.workspace.model.MachineImpl;
+import org.eclipse.che.ide.terminal.settings.TerminalOptions;
 
 /**
  * Special factory for creating {@link TerminalPresenter} instances.
  *
  * @author Dmitry Shnurenko
- * @author Alexander Andrienko
+ * @author Oleksandr Andriienko
  */
 public interface TerminalFactory {
 
@@ -28,5 +29,5 @@ public interface TerminalFactory {
    * @param options options for new terminal
    * @return an instance of {@link TerminalPresenter}
    */
-  TerminalPresenter create(@Assisted MachineImpl machine, @Assisted TerminalOptionsJso options);
+  TerminalPresenter create(@Assisted MachineImpl machine, @Assisted TerminalOptions options);
 }

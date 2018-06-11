@@ -18,6 +18,7 @@ import org.eclipse.che.ide.api.mvp.View;
  * The interface defines methods to control displaying of terminal.
  *
  * @author Dmitry Shnurenko
+ * @author Oleksandr Andriienko
  */
 @ImplementedBy(TerminalViewImpl.class)
 interface TerminalView extends View<TerminalView.ActionDelegate> {
@@ -45,7 +46,7 @@ interface TerminalView extends View<TerminalView.ActionDelegate> {
    *
    * @param terminal terminal which will be opened
    */
-  void openTerminal(@NotNull TerminalJso terminal);
+  void setTerminal(@NotNull Terminal terminal);
 
   /**
    * Shows special error message when terminal is failed.
