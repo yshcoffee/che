@@ -64,8 +64,6 @@ public class TerminalPresenter implements Presenter, TerminalView.ActionDelegate
   private int countRetry;
   private Terminal terminal;
   private TerminalStateListener terminalStateListener;
-  private int width;
-  private int height;
 
   @Inject
   public TerminalPresenter(
