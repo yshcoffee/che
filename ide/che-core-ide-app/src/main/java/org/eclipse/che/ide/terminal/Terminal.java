@@ -11,15 +11,12 @@
 package org.eclipse.che.ide.terminal;
 
 import com.google.gwt.dom.client.Element;
-import elemental.events.KeyboardEvent;
-import jsinterop.annotations.JsFunction;
 import jsinterop.annotations.JsMethod;
 import jsinterop.annotations.JsPackage;
 import jsinterop.annotations.JsProperty;
 import jsinterop.annotations.JsType;
 import org.eclipse.che.ide.terminal.helpers.TerminalGeometry;
 import org.eclipse.che.ide.terminal.settings.TerminalOptions;
-
 
 /**
  * GWT binding to term.js script
@@ -32,18 +29,6 @@ public class Terminal {
 
     @SuppressWarnings("unused")
     public Terminal(TerminalOptions options) {}
-
-    @JsFunction
-    @FunctionalInterface
-    public interface TerminalEventHandler {
-        void invoke(Object... args);
-    }
-
-    @JsFunction
-    @FunctionalInterface
-    public interface CustomKeyEventHandler {
-        boolean onKeyDown(KeyboardEvent ev);
-    }
 
     @JsProperty(name = "options")
     public native TerminalOptions getOptions();
@@ -70,7 +55,9 @@ public class Terminal {
 
     public native void resize(int cols, int rows);
 
-    public native void on(String event, TerminalEventHandler function);
+    public native void on(String event, TerminalHandlers.TerminalDataEventHandler function);
+
+    public native void on(String event, TerminalHandlers.TerminalResizeEventHandler function);
 
     public native void focus();
 
@@ -91,10 +78,9 @@ public class Terminal {
     public static native void applyAddon(Object addon);
 
     @JsMethod(name = "attachCustomKeyEventHandler")
-    public native void attachCustomKeyEventHandler(CustomKeyEventHandler keyHandler);
+    public native void attachCustomKeyEventHandler(TerminalHandlers.CustomKeyEventHandler keyHandler);
 
     public native void reset();
 
-    // todo use it!!!! any way
     public native void destroy();
 }

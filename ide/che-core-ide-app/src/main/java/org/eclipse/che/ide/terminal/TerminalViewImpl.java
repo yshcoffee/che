@@ -22,8 +22,8 @@ import com.google.gwt.user.client.ui.Label;
 import com.google.gwt.user.client.ui.RequiresResize;
 import com.google.gwt.user.client.ui.Widget;
 
-import org.eclipse.che.ide.terminal.helpers.TerminalGeometry;
 import org.eclipse.che.ide.terminal.addons.TerminalAddonsProvider;
+import org.eclipse.che.ide.terminal.helpers.TerminalGeometry;
 
 import javax.validation.constraints.NotNull;
 
@@ -61,27 +61,13 @@ final class TerminalViewImpl extends Composite implements TerminalView, Focusabl
   @Override
   public void setTerminal(@NotNull final Terminal terminal) {
     unavailableLabel.setVisible(false);
-
-    this.terminal = terminal;
-
     terminalPanel.setVisible(true);
 
     Terminal.applyAddon(TerminalAddonsProvider.getFitAddon());
     terminal.attachCustomKeyEventHandler(new CustomKeyEventTerminalHandler(terminal));
 
-    new Timer() {
-      @Override
-      public void run() {
-        terminal.open(terminalPanel.getElement());
-
-        terminalElement = terminalPanel.getElement();
-//        terminalElement.getStyle().setProperty("opacity", "0");
-//        terminalElement.getFirstChildElement().getStyle().clearProperty("backgroundColor");
-//        terminalElement.getFirstChildElement().getStyle().clearProperty("color");
-//        terminalElement.getStyle().clearProperty("opacity");
-      }
-    }.schedule(0);
-  }
+    this.terminal = terminal;
+}
 
   /** {@inheritDoc} */
   @Override
@@ -100,27 +86,30 @@ final class TerminalViewImpl extends Composite implements TerminalView, Focusabl
    */
   @Override
   public void onResize() {
-    if (terminalElement != null && isVisible() && isAttached()) {
-      //Log.info(getClass(), "Size " + terminalElement.getClientWidth() + " " + terminalElement.getClientHeight());
-
-      resizeTimer.schedule(100);
-    }
+      resizeTimer.schedule(200);
   }
 
   private Timer resizeTimer =
       new Timer() {
         @Override
         public void run() {
-          resizeTerminal();
+            resizeTerminal();
         }
       };
 
   private void resizeTerminal() {
-    TerminalGeometry geometryJso = terminal.proposeGeometry();
-    int x = geometryJso.getCols();
-    int y = geometryJso.getRows();
+    if (!this.isAttached() || !this.isVisible()){
+      return;
+    }
 
-    delegate.setTerminalSize(x, y);
+    if (terminalElement != null) {
+      TerminalGeometry geometry = terminal.proposeGeometry();
+      terminal.resize(geometry.getCols(), geometry.getRows());
+//      terminal.fit();
+    } else {
+        terminal.open(terminalPanel.getElement());
+        terminalElement = terminalPanel.getElement();
+    }
   }
 
   @Override

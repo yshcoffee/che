@@ -34,7 +34,6 @@ import org.eclipse.che.ide.collections.Jso;
 import org.eclipse.che.ide.core.AgentURLModifier;
 import org.eclipse.che.ide.terminal.settings.TerminalOptions;
 import org.eclipse.che.ide.terminal.settings.TerminalTheme;
-import org.eclipse.che.ide.util.loging.Log;
 import org.eclipse.che.ide.websocket.WebSocket;
 
 import java.util.Optional;
@@ -48,6 +47,7 @@ public class TerminalPresenter implements Presenter, TerminalView.ActionDelegate
 
   // event which is performed when user input data into terminal
   private static final String DATA_EVENT_NAME = "data";
+  private static final String RESIZE_EVENT_NAME = "resize";
   private static final int TIME_BETWEEN_CONNECTIONS = 2_000;
 
   private final TerminalView             view;
@@ -127,38 +127,39 @@ public class TerminalPresenter implements Presenter, TerminalView.ActionDelegate
   private void connectToTerminal(@NotNull String wsUrl) {
     countRetry--;
 
+    setUpTerminalTheme();
+    terminal = new Terminal(options);
+    view.setTerminal(terminal);
+
+    terminal.on(RESIZE_EVENT_NAME, (TerminalHandlers.TerminalResizeEventHandler)geometry -> setTerminalSize(geometry.getCols(), geometry.getRows())
+    );
+
     socket = WebSocket.create(wsUrl);
 
-    socket.setOnMessageHandler(event -> {
-      terminal.write(event.getMessage());
-    });
+    socket.setOnMessageHandler(event -> terminal.write(event.getMessage()));
 
     socket.setOnCloseHandler(
         event -> {
           if (CLOSE_NORMAL == event.getCode()) {
             connected = false;
             terminalStateListener.onExit();
+            terminal.destroy();
           }
         });
 
     socket.setOnOpenHandler(
-        () -> {
-          setUpTheme();
-          terminal = new Terminal(options);
-          Log.info(getClass(), terminal.getOptions().getCols(), terminal.getOptions().getRows());
+      () -> {
           connected = true;
 
-          view.setTerminal(terminal);
-
           terminal.on(
-              DATA_EVENT_NAME,
-              data -> {
-                Jso jso = Jso.create();
-                jso.addField("type", "data");
-                jso.addField("data", data);
-                socket.send(jso.serialize());
-              });
-        });
+                  DATA_EVENT_NAME,
+                  (TerminalHandlers.TerminalDataEventHandler)data -> {
+                      Jso jso = Jso.create();
+                      jso.addField("type", "data");
+                      jso.addField("data", data);
+                      socket.send(jso.serialize());
+                  });
+      });
 
     socket.setOnErrorHandler(
         () -> {
@@ -177,7 +178,7 @@ public class TerminalPresenter implements Presenter, TerminalView.ActionDelegate
         });
   }
 
-  private void setUpTheme() {
+  private void setUpTerminalTheme() {
     Theme theme = themeAgent.getTheme(themeAgent.getCurrentThemeId());
     TerminalTheme terminalTheme = new TerminalTheme();
     terminalTheme.setCursor(theme.getBlueIconColor());
@@ -216,15 +217,6 @@ public class TerminalPresenter implements Presenter, TerminalView.ActionDelegate
     if (!connected) {
       return;
     }
-
-    if (width == x && height == y) {
-      return;
-    }
-
-    terminal.resize(x, y);
-    width = x;
-    height = y;
-
     Jso jso = Jso.create();
     JsArrayInteger arr = Jso.createArray().cast();
     arr.set(0, x);

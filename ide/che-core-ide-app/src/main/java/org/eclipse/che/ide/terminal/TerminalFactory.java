@@ -18,7 +18,7 @@ import org.eclipse.che.ide.terminal.settings.TerminalOptions;
  * Special factory for creating {@link TerminalPresenter} instances.
  *
  * @author Dmitry Shnurenko
- * @author Alexander Andrienko
+ * @author Oleksandr Andriienko
  */
 public interface TerminalFactory {
 

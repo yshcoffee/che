@@ -17,7 +17,7 @@ import elemental.events.KeyboardEvent;
 
 /**
  * Custom keyDown handler for {@link Terminal}. Implementation of the {@link
- * Terminal.CustomKeyEventHandler}. This handler created to support hotKeys:
+ * TerminalHandlers.CustomKeyEventHandler}. This handler created to support hotKeys:
  *
  * <ul>
  *   <li>"Ctrl + C" copy text in case if terminal contains selected text
@@ -26,7 +26,7 @@ import elemental.events.KeyboardEvent;
  *
  * @author Alexander Andrienko
  */
-public final class CustomKeyEventTerminalHandler implements Terminal.CustomKeyEventHandler {
+public final class CustomKeyEventTerminalHandler implements TerminalHandlers.CustomKeyEventHandler {
 
   private final Terminal terminal;
 

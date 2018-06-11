@@ -44,6 +44,8 @@ public class TerminalOptions {
         setDisableStdin(false);
         setUseFlowControl(false);
         setTabStopWidth(8);
+        setFontSize(12);
+        setFontFamily("DejaVu Sans Mono");
     }
 
     @JsProperty(name = "convertEol")
@@ -141,4 +143,16 @@ public class TerminalOptions {
 
     @JsProperty(name = "theme")
     public native TerminalTheme getTheme();
+
+    @JsProperty(name = "fontSize")
+    public native int getFontSize();
+
+    @JsProperty(name = "fontSize")
+    public native void setFontSize(int fontSize);
+
+    @JsProperty(name = "fontFamily")
+    public native String getFontFamily();
+
+    @JsProperty(name = "fontFamily")
+    public native void setFontFamily(String fontFamily);
 }
