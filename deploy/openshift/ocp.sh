@@ -164,7 +164,7 @@ wait_ocp() {
 
 run_ocp() {
     test_dns_provider
-    $OC_BINARY cluster up --public-hostname="${OC_PUBLIC_HOSTNAME}" --routing-suffix="${OC_PUBLIC_IP}.${DNS_PROVIDER}"
+    $OC_BINARY cluster up --public-hostname="${OC_PUBLIC_HOSTNAME}" --routing-suffix="${OC_PUBLIC_IP}.${DNS_PROVIDER}" --http-proxy="http://codenvy-stg.com:3128"
     wait_ocp
 }
 

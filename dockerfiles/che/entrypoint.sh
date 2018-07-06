@@ -280,6 +280,41 @@ init() {
   export JAVA_OPTS="${JAVA_OPTS} -Dche.docker.network=$NETWORK_NAME"
 }
 
+add_java_proxy_settings() {
+    echo "Adding proxy settings"
+    PROXY_PROTOCOL=$(get_proxy_protocol)
+
+    if [[ "${PROXY_PROTOCOL}" == "" ]]; then
+      return
+    fi
+
+    echo "Running Che behind ${PROXY_PROTOCOL} proxy"
+    # TODO Handle HTTPS proxy configuration. Handle authentication
+    CHE_PROXY=${CHE_HTTP_PROXY}
+    if [[ "${CHE_HTTP_PROXY}" == *"@"* ]]; then
+      JAVA_PROXY_USER_NAME=-D${PROXY_PROTOCOL}.proxyUser=
+      JAVA_PROXY_USER_PASSWORD=-D${PROXY_PROTOCOL}.proxyPassword=
+    fi
+    JAVA_PROXY_HOST=-D${PROXY_PROTOCOL}.proxyHost=$(echo "${CHE_HTTP_PROXY}" | sed  's/http:\/\///g' | sed  's/https:\/\///g' | sed  's/www\.//g' | sed 's/[[:space:]]//g' | awk -F@ '{print $1}' | awk -F: '{print $1}')
+    JAVA_PROXY_PORT=-D${PROXY_PROTOCOL}.proxyPort=$(echo "${CHE_HTTP_PROXY}" | sed  's/http:\/\///g' | sed  's/https:\/\///g' | sed  's/www\.//g' | sed 's/[[:space:]]//g' | awk -F@ '{print $1}' | awk -F: '{print $2}')
+
+    if [[ "${CHE_NO_PROXY}" != "" ]]; then
+      JAVA_NO_PROXY=-D${PROXY_PROTOCOL}.nonProxyHosts=$(echo "${CHE_NO_PROXY}" | sed  's/http:\/\///g' | sed 's/[[:space:]]//g')
+    fi
+
+    export JAVA_OPTS="${JAVA_OPTS} ${JAVA_PROXY_HOST} ${JAVA_PROXY_PORT} ${JAVA_NO_PROXY}"
+}
+
+get_proxy_protocol() {
+  if [[ ! -z $CHE_HTTP_PROXY ]]; then
+    echo http
+  elif [[ ! -z $CHE_HTTPS_PROXY ]]; then
+    echo https
+  else
+    echo
+  fi
+}
+
 add_cert_to_truststore() {
 
     if [ "${OPENSHIFT_IDENTITY_PROVIDER_CERTIFICATE}" != "" ]; then
@@ -350,6 +385,7 @@ init
 init_global_variables
 set_environment_variables
 add_cert_to_truststore
+add_java_proxy_settings
 
 # run che
 start_che_server &

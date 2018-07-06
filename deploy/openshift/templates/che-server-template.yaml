@@ -71,6 +71,14 @@ objects:
             valueFrom:
               fieldRef:
                 fieldPath: metadata.namespace
+          - name: CHE_HTTP_PROXY
+            value: "${CHE_HTTP_PROXY}"
+          - name: CHE_HTTPS_PROXY
+            value: "${CHE_HTTPS_PROXY}"
+          - name: CHE_NO_PROXY
+            value: "${CHE_NO_PROXY}"
+          - name: CHE_WORKSPACE_HTTP__PROXY__JAVA__OPTIONS
+            value: "${CHE_NO_PROXY}"
           - name: CHE_MULTIUSER
             value: "${CHE_MULTIUSER}"
           - name: CHE_HOST
@@ -187,6 +195,18 @@ objects:
     - type: ConfigChange
 
 parameters:
+- name: CHE_HTTP_PROXY
+  displayName: Che HTTP proxy URL
+  description: HTTP Proxy to run Che behind
+  value: codenvy-stg:3128
+- name: CHE_HTTPS_PROXY
+  displayName: Che HTTPS proxy URL
+  description: HTTPS Proxy to run Che behind
+  value: ''
+- name: CHE_NO_PROXY
+  displayName: Che No Proxy hosts
+  description: no_proxy setting for excluding hosts from proxying
+  value: 'localhost,che-host'
 - name: ROUTING_SUFFIX
   displayName: Routing suffix of your OpenShift cluster
   description: This is the suffix appended to routes in your OpenShift cluster <route>-<project>.<routing_suffix>

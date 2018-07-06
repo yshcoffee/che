@@ -12,6 +12,7 @@ metadata:
     app: che
   name: che
 data:
+  CHE_HTTP_PROXY
   CHE_HOST: {{ template "cheHost" . }}
   CHE_PORT: "8080"
 {{- if and .Values.global.tls .Values.global.tls.enabled }}
