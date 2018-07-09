@@ -76,7 +76,7 @@ objects:
           - name: CHE_HTTPS_PROXY
             value: "${CHE_HTTPS_PROXY}"
           - name: CHE_NO_PROXY
-            value: "${CHE_NO_PROXY}"
+            value: "${CHE_NO_PROXY},che-eclipse-che.${ROUTING_SUFFIX}"
           - name: CHE_WORKSPACE_HTTP__PROXY__JAVA__OPTIONS
             value: "${CHE_NO_PROXY}"
           - name: CHE_MULTIUSER

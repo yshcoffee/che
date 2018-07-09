@@ -299,7 +299,7 @@ add_java_proxy_settings() {
     JAVA_PROXY_PORT=-D${PROXY_PROTOCOL}.proxyPort=$(echo "${CHE_HTTP_PROXY}" | sed  's/http:\/\///g' | sed  's/https:\/\///g' | sed  's/www\.//g' | sed 's/[[:space:]]//g' | awk -F@ '{print $1}' | awk -F: '{print $2}')
 
     if [[ "${CHE_NO_PROXY}" != "" ]]; then
-      JAVA_NO_PROXY=-D${PROXY_PROTOCOL}.nonProxyHosts=$(echo "${CHE_NO_PROXY}" | sed  's/http:\/\///g' | sed 's/[[:space:]]//g')
+      JAVA_NO_PROXY=-D${PROXY_PROTOCOL}.nonProxyHosts=\'$(echo "${CHE_NO_PROXY}" | sed  's/http:\/\///g' | sed 's/[[:space:]]//g' | sed 's/,/|/g')\'
     fi
 
     export JAVA_OPTS="${JAVA_OPTS} ${JAVA_PROXY_HOST} ${JAVA_PROXY_PORT} ${JAVA_NO_PROXY}"
