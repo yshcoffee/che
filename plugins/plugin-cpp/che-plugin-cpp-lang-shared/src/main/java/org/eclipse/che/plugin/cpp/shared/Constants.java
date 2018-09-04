@@ -30,8 +30,22 @@ public final class Constants {
   public static String C_EXT = "c";
   /** Default extension for C Headers files */
   public static String H_EXT = "h";
+  /** Common extension for C++ Headers files */
+  public static String HH_EXT = "hh";
+  /** Common extension for C++ Headers files */
+  public static String HXX_EXT = "hxx";
+  /** Common extension for C++ Headers files */
+  public static String HPP_EXT = "hpp";
+  /** Common extension for C++ Headers files */
+  public static String H_PLUS_EXT = "h++";
   /** Default extension for C++ files */
   public static String CPP_EXT = "cpp";
+  /** Common extension for C++ files */
+  public static String CC_EXT = "cc";
+  /** Common extension for C++ files */
+  public static String CXX_EXT = "cxx";
+  /** Common extension for C++ files */
+  public static String C_PLUS_EXT = "c++";
 
   private Constants() {}
 }

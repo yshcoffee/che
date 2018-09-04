@@ -13,9 +13,16 @@ package org.eclipse.che.plugin.cpp.ide.inject;
 
 import static com.google.gwt.inject.client.multibindings.GinMultibinder.newSetBinder;
 import static org.eclipse.che.plugin.cpp.ide.CppResources.INSTANCE;
+import static org.eclipse.che.plugin.cpp.shared.Constants.CC_EXT;
 import static org.eclipse.che.plugin.cpp.shared.Constants.CPP_EXT;
+import static org.eclipse.che.plugin.cpp.shared.Constants.CXX_EXT;
 import static org.eclipse.che.plugin.cpp.shared.Constants.C_EXT;
+import static org.eclipse.che.plugin.cpp.shared.Constants.C_PLUS_EXT;
+import static org.eclipse.che.plugin.cpp.shared.Constants.HH_EXT;
+import static org.eclipse.che.plugin.cpp.shared.Constants.HPP_EXT;
+import static org.eclipse.che.plugin.cpp.shared.Constants.HXX_EXT;
 import static org.eclipse.che.plugin.cpp.shared.Constants.H_EXT;
+import static org.eclipse.che.plugin.cpp.shared.Constants.H_PLUS_EXT;
 
 import com.google.gwt.inject.client.AbstractGinModule;
 import com.google.inject.Provides;
@@ -64,8 +71,57 @@ public class CppGinModule extends AbstractGinModule {
 
   @Provides
   @Singleton
+  @Named("CcFileType")
+  protected FileType provideCcFile(FileTypeProvider fileTypeProvider) {
+    return fileTypeProvider.getByExtension(INSTANCE.cppFile(), CC_EXT);
+  }
+
+  @Provides
+  @Singleton
+  @Named("CxxFileType")
+  protected FileType provideCxxFile(FileTypeProvider fileTypeProvider) {
+    return fileTypeProvider.getByExtension(INSTANCE.cppFile(), CXX_EXT);
+  }
+
+  @Provides
+  @Singleton
+  @Named("CPlusFileType")
+  protected FileType provideCPlusFile(FileTypeProvider fileTypeProvider) {
+    return fileTypeProvider.getByExtension(INSTANCE.cppFile(), C_PLUS_EXT);
+  }
+
+  @Provides
+  @Singleton
   @Named("HFileType")
   protected FileType provideHeaderFile(FileTypeProvider fileTypeProvider) {
     return fileTypeProvider.getByExtension(INSTANCE.cHeaderFile(), H_EXT);
+  }
+
+  @Provides
+  @Singleton
+  @Named("HhFileType")
+  protected FileType provideHhFile(FileTypeProvider fileTypeProvider) {
+    return fileTypeProvider.getByExtension(INSTANCE.cHeaderFile(), HH_EXT);
+  }
+
+  @Provides
+  @Singleton
+  @Named("HxxFileType")
+  protected FileType provideHxxFile(FileTypeProvider fileTypeProvider) {
+    return fileTypeProvider.getByExtension(INSTANCE.cHeaderFile(), HXX_EXT);
+  }
+
+  @Provides
+  @Singleton
+  @Named("HppFileType")
+  protected FileType provideHppFile(FileTypeProvider fileTypeProvider) {
+    return fileTypeProvider.getByExtension(INSTANCE.cHeaderFile(), HPP_EXT);
+  }
+
+  @Provides
+  @Singleton
+  @Named("HPlusFileType")
+  protected FileType provideHPlusFile(FileTypeProvider fileTypeProvider) {
+    return fileTypeProvider.getByExtension(INSTANCE.cHeaderFile(), H_PLUS_EXT);
   }
 }

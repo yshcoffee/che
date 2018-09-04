@@ -37,10 +37,24 @@ public class CppExtension {
       FileTypeRegistry fileTypeRegistry,
       @Named("CFileType") FileType cFile,
       @Named("CppFileType") FileType cppFile,
-      @Named("HFileType") FileType hFile) {
+      @Named("CcFileType") FileType ccFile,
+      @Named("CxxFileType") FileType cxxFile,
+      @Named("CPlusFileType") FileType cPlusFile,
+      @Named("HFileType") FileType hFile,
+      @Named("HhFileType") FileType hhFile,
+      @Named("HxxFileType") FileType hxxFile,
+      @Named("HppFileType") FileType hppFile,
+      @Named("HPlusFileType") FileType hPlusFile) {
     fileTypeRegistry.registerFileType(cFile);
     fileTypeRegistry.registerFileType(cppFile);
+    fileTypeRegistry.registerFileType(ccFile);
+    fileTypeRegistry.registerFileType(cxxFile);
+    fileTypeRegistry.registerFileType(cPlusFile);
     fileTypeRegistry.registerFileType(hFile);
+    fileTypeRegistry.registerFileType(hhFile);
+    fileTypeRegistry.registerFileType(hxxFile);
+    fileTypeRegistry.registerFileType(hppFile);
+    fileTypeRegistry.registerFileType(hPlusFile);
   }
 
   @Inject
