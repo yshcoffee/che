@@ -27,6 +27,7 @@ import org.eclipse.che.selenium.pageobject.theia.TheiaEditor;
 import org.eclipse.che.selenium.pageobject.theia.TheiaIde;
 import org.eclipse.che.selenium.pageobject.theia.TheiaNewFileDialog;
 import org.eclipse.che.selenium.pageobject.theia.TheiaProjectTree;
+import org.eclipse.che.selenium.pageobject.theia.TheiaSelectTerminalPopup;
 import org.eclipse.che.selenium.pageobject.theia.TheiaTerminal;
 import org.testng.annotations.AfterClass;
 import org.testng.annotations.BeforeClass;
@@ -66,6 +67,7 @@ public class TheiaBuildPluginTest {
   @Inject private TheiaProjectTree theiaProjectTree;
   @Inject private TheiaEditor theiaEditor;
   @Inject private TheiaNewFileDialog theiaNewFileDialog;
+  @Inject private TheiaSelectTerminalPopup theiaSelectTerminalPopup;
 
   @BeforeClass
   public void prepare() {
@@ -86,16 +88,22 @@ public class TheiaBuildPluginTest {
   public void pluginShouldBeBuilt() {
     theiaProjectTree.clickOnFilesTab();
     theiaProjectTree.waitProjectsRootItem();
-    theiaIde.runMenuCommand("File", "Open New Terminal");
+    theiaIde.runMenuCommand("File", "Open new multi-machine terminal");
+    theiaSelectTerminalPopup.waitForm();
+    theiaSelectTerminalPopup.clickOnProposalItem("ws/dev");
+    theiaTerminal.waitTerminal();
 
+    theiaTerminal.waitTerminal();
     theiaTerminal.clickOnTerminal();
     theiaTerminal.performCommand(GIT_CLONE_COMMAND);
     theiaTerminal.waitTerminalOutput(EXPECTED_CLONE_OUTPUT);
 
+    theiaTerminal.waitTerminal();
     theiaTerminal.clickOnTerminal();
     theiaTerminal.performCommand(GO_TO_DIRECTORY_COMMAND);
     theiaTerminal.waitTerminalOutput(GO_TO_DIRECTORY_COMMAND);
 
+    theiaTerminal.waitTerminal();
     theiaTerminal.clickOnTerminal();
     theiaTerminal.performCommand(BUILD_COMMAND);
     theiaTerminal.waitTerminalOutput(EXPECTED_TERMINAL_OUTPUT);
