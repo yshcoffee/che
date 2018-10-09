@@ -154,8 +154,7 @@ public class CodenvyEditor {
     String ORION_ACTIVE_EDITOR_CONTAINER_XPATH =
         ACTIVE_EDITOR_ENTRY_POINT + "//div[@class='textviewContent' and @contenteditable='true']";
     String ORION_CONTENT_ACTIVE_EDITOR_XPATH = ORION_ACTIVE_EDITOR_CONTAINER_XPATH + "/div";
-    String ACTIVE_LINES_XPATH =
-        "//div[@class='textviewSelection']/preceding::div[@class='annotationLine currentLine'][1]";
+    String ACTIVE_LINES_XPATH = "(//div[@class='annotationLine currentLine'])[2]";
     String ACTIVE_LINE_HIGHLIGHT_CLASSNAME = "annotationLine currentLine";
     String ACTIVE_TAB_FILE_NAME = "//div[@active]/descendant::div[text()='%s']";
     String ACTIVE_TAB_UNSAVED_FILE_NAME = "//div[@active and @unsaved]//div[text()='%s']";
