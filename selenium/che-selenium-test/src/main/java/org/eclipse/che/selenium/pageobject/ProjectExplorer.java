@@ -547,8 +547,6 @@ public class ProjectExplorer {
    * @param path item's path in format: 'Test/src/pom.xml'
    */
   public void openItemByPath(String path) {
-    Actions action = actionsFactory.createAction(seleniumWebDriver);
-
     seleniumWebDriverHelper.waitNoExceptions(
         () -> {
           waitAndSelectItem(path);
@@ -558,10 +556,7 @@ public class ProjectExplorer {
         NoSuchElementException.class);
 
     seleniumWebDriverHelper.waitNoExceptions(
-        () -> {
-          action.moveToElement(waitAndGetItem(path)).perform();
-          action.doubleClick().perform();
-        },
+        () -> seleniumWebDriverHelper.getAction().doubleClick(waitAndGetItem(path)).perform(),
         LOAD_PAGE_TIMEOUT_SEC,
         StaleElementReferenceException.class);
   }
