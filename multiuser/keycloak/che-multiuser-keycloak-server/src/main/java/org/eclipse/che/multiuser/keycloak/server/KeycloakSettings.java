@@ -40,6 +40,8 @@ import java.io.InputStream;
 import java.net.URL;
 import java.util.Collections;
 import java.util.Map;
+import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.ExecutionException;
 import javax.inject.Inject;
 import javax.inject.Named;
 import javax.inject.Singleton;
@@ -53,7 +55,19 @@ public class KeycloakSettings {
   private static final Logger LOG = LoggerFactory.getLogger(KeycloakSettings.class);
   private static final String DEFAULT_USERNAME_CLAIM = "preferred_username";
 
-  private final Map<String, String> settings;
+  private final String serverURL;
+  private final String realm;
+  private final String clientId;
+  private final String oidcProvider;
+  private final String usernameClaim;
+  private final boolean useNonce;
+  private final String osoEndpoint;
+  private final String gitHubEndpoint;
+  private final boolean useFixedRedirectUrls;
+  private final String cheServerEndpoint;
+  private String jsAdapterUrl;
+  private String wellKnownEndpoint;
+  private CompletableFuture<Map<String, String>> settingsFuture;
 
   @Inject
   public KeycloakSettings(
@@ -86,83 +100,111 @@ public class KeycloakSettings {
     if (!wellKnownEndpoint.endsWith("/")) {
       wellKnownEndpoint = wellKnownEndpoint + "/";
     }
-    wellKnownEndpoint += ".well-known/openid-configuration";
-
     LOG.info("Retrieving OpenId configuration from endpoint: {}", wellKnownEndpoint);
 
-    URL url;
-    Map<String, Object> openIdConfiguration;
-    try {
-      url = new URL(wellKnownEndpoint);
-      final InputStream inputStream = url.openStream();
-      final JsonFactory factory = new JsonFactory();
-      final JsonParser parser = factory.createParser(inputStream);
-      final TypeReference<Map<String, Object>> typeReference =
-          new TypeReference<Map<String, Object>>() {};
-      openIdConfiguration = new ObjectMapper().reader().readValue(parser, typeReference);
-    } catch (IOException e) {
-      throw new RuntimeException(
-          "Exception while retrieving OpenId configuration from endpoint: " + wellKnownEndpoint, e);
-    }
+    this.wellKnownEndpoint = wellKnownEndpoint + ".well-known/openid-configuration";
 
-    LOG.info("openid configuration = {}", openIdConfiguration);
+    this.cheServerEndpoint = cheServerEndpoint;
+    this.oidcProvider = oidcProvider;
+    this.realm = realm;
+    this.jsAdapterUrl = jsAdapterUrl;
+    this.serverURL = serverURL;
+    this.clientId = clientId;
+    this.usernameClaim = usernameClaim;
+    this.useNonce = useNonce;
+    this.osoEndpoint = osoEndpoint;
+    this.gitHubEndpoint = gitHubEndpoint;
+    this.useFixedRedirectUrls = useFixedRedirectUrls;
 
-    Map<String, String> settings = Maps.newHashMap();
-    settings.put(
-        USERNAME_CLAIM_SETTING, usernameClaim == null ? DEFAULT_USERNAME_CLAIM : usernameClaim);
-    settings.put(CLIENT_ID_SETTING, clientId);
-    settings.put(REALM_SETTING, realm);
-    if (serverURL != null) {
-      settings.put(AUTH_SERVER_URL_SETTING, serverURL);
-      settings.put(PROFILE_ENDPOINT_SETTING, serverURL + "/realms/" + realm + "/account");
-      settings.put(PASSWORD_ENDPOINT_SETTING, serverURL + "/realms/" + realm + "/account/password");
-      settings.put(
-          LOGOUT_ENDPOINT_SETTING,
-          serverURL + "/realms/" + realm + "/protocol/openid-connect/logout");
-      settings.put(
-          TOKEN_ENDPOINT_SETTING,
-          serverURL + "/realms/" + realm + "/protocol/openid-connect/token");
-    }
-    String endSessionEndpoint = (String) openIdConfiguration.get("end_session_endpoint");
-    if (endSessionEndpoint != null) {
-      settings.put(LOGOUT_ENDPOINT_SETTING, endSessionEndpoint);
-    }
-    String tokenEndpoint = (String) openIdConfiguration.get("token_endpoint");
-    if (tokenEndpoint != null) {
-      settings.put(TOKEN_ENDPOINT_SETTING, tokenEndpoint);
-    }
-    String userInfoEndpoint = (String) openIdConfiguration.get("userinfo_endpoint");
-    if (userInfoEndpoint != null) {
-      settings.put(USERINFO_ENDPOINT_SETTING, userInfoEndpoint);
-    }
-    String jwksUriEndpoint = (String) openIdConfiguration.get("jwks_uri");
-    if (jwksUriEndpoint != null) {
-      settings.put(JWKS_ENDPOINT_SETTING, jwksUriEndpoint);
-    }
-    settings.put(OSO_ENDPOINT_SETTING, osoEndpoint);
-    settings.put(GITHUB_ENDPOINT_SETTING, gitHubEndpoint);
-
-    if (oidcProvider != null) {
-      settings.put(OIDC_PROVIDER_SETTING, oidcProvider);
-      if (useFixedRedirectUrls) {
-        String rootUrl =
-            cheServerEndpoint.endsWith("/") ? cheServerEndpoint : cheServerEndpoint + "/";
-        settings.put(
-            FIXED_REDIRECT_URL_FOR_DASHBOARD, rootUrl + "keycloak/oidcCallbackDashboard.html");
-        settings.put(FIXED_REDIRECT_URL_FOR_IDE, rootUrl + "keycloak/oidcCallbackIde.html");
-      }
-    }
-    settings.put(USE_NONCE_SETTING, Boolean.toString(useNonce));
-    if (jsAdapterUrl == null) {
-      jsAdapterUrl =
-          (oidcProvider != null) ? "/api/keycloak/OIDCKeycloak.js" : serverURL + "/js/keycloak.js";
-    }
-    settings.put(JS_ADAPTER_URL_SETTING, jsAdapterUrl);
-
-    this.settings = Collections.unmodifiableMap(settings);
+    this.settingsFuture = CompletableFuture.supplyAsync(this::initializeKeycloakSettings);
   }
 
   public Map<String, String> get() {
-    return settings;
+    try {
+      LOG.info("trying to get settings");
+      return settingsFuture.get();
+    } catch (InterruptedException | ExecutionException e) {
+      LOG.error("failed to get KeycloakSettings, returning empty map");
+      return Collections.emptyMap();
+    }
+  }
+
+  private Map<String, String> initializeKeycloakSettings() {
+    try {
+      Map<String, String> settings = Maps.newHashMap();
+      URL url;
+      Map<String, Object> openIdConfiguration = null;
+
+      url = new URL(wellKnownEndpoint);
+
+      while (openIdConfiguration == null) {
+        final InputStream inputStream = url.openStream();
+        final JsonFactory factory = new JsonFactory();
+        final JsonParser parser = factory.createParser(inputStream);
+        final TypeReference<Map<String, Object>> typeReference =
+            new TypeReference<Map<String, Object>>() {};
+        openIdConfiguration = new ObjectMapper().reader().readValue(parser, typeReference);
+      }
+
+      LOG.info("openid configuration = {}", openIdConfiguration);
+
+      settings.put(
+          USERNAME_CLAIM_SETTING, usernameClaim == null ? DEFAULT_USERNAME_CLAIM : usernameClaim);
+      settings.put(CLIENT_ID_SETTING, clientId);
+      settings.put(REALM_SETTING, realm);
+      if (serverURL != null) {
+        settings.put(AUTH_SERVER_URL_SETTING, serverURL);
+        settings.put(PROFILE_ENDPOINT_SETTING, serverURL + "/realms/" + realm + "/account");
+        settings.put(
+            PASSWORD_ENDPOINT_SETTING, serverURL + "/realms/" + realm + "/account/password");
+        settings.put(
+            LOGOUT_ENDPOINT_SETTING,
+            serverURL + "/realms/" + realm + "/protocol/openid-connect/logout");
+        settings.put(
+            TOKEN_ENDPOINT_SETTING,
+            serverURL + "/realms/" + realm + "/protocol/openid-connect/token");
+      }
+      String endSessionEndpoint = (String) openIdConfiguration.get("end_session_endpoint");
+      if (endSessionEndpoint != null) {
+        settings.put(LOGOUT_ENDPOINT_SETTING, endSessionEndpoint);
+      }
+      String tokenEndpoint = (String) openIdConfiguration.get("token_endpoint");
+      if (tokenEndpoint != null) {
+        settings.put(TOKEN_ENDPOINT_SETTING, tokenEndpoint);
+      }
+      String userInfoEndpoint = (String) openIdConfiguration.get("userinfo_endpoint");
+      if (userInfoEndpoint != null) {
+        settings.put(USERINFO_ENDPOINT_SETTING, userInfoEndpoint);
+      }
+      String jwksUriEndpoint = (String) openIdConfiguration.get("jwks_uri");
+      if (jwksUriEndpoint != null) {
+        settings.put(JWKS_ENDPOINT_SETTING, jwksUriEndpoint);
+      }
+      settings.put(OSO_ENDPOINT_SETTING, osoEndpoint);
+      settings.put(GITHUB_ENDPOINT_SETTING, gitHubEndpoint);
+
+      if (oidcProvider != null) {
+        settings.put(OIDC_PROVIDER_SETTING, oidcProvider);
+        if (useFixedRedirectUrls) {
+          String rootUrl =
+              cheServerEndpoint.endsWith("/") ? cheServerEndpoint : cheServerEndpoint + "/";
+          settings.put(
+              FIXED_REDIRECT_URL_FOR_DASHBOARD, rootUrl + "keycloak/oidcCallbackDashboard.html");
+          settings.put(FIXED_REDIRECT_URL_FOR_IDE, rootUrl + "keycloak/oidcCallbackIde.html");
+        }
+      }
+      settings.put(USE_NONCE_SETTING, Boolean.toString(useNonce));
+      if (jsAdapterUrl == null) {
+        jsAdapterUrl =
+            (oidcProvider != null)
+                ? "/api/keycloak/OIDCKeycloak.js"
+                : serverURL + "/js/keycloak.js";
+      }
+      settings.put(JS_ADAPTER_URL_SETTING, jsAdapterUrl);
+      return settings;
+    } catch (IOException | RuntimeException ignored) {
+      LOG.error("ignored exception: ", ignored);
+      throw new RuntimeException("ignored exception ", ignored);
+    }
   }
 }
