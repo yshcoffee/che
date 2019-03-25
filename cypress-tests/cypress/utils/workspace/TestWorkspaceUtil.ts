@@ -20,7 +20,7 @@ export class TestWorkspaceUtil {
         const delayBetweenAttempts: number = 5000;
         const expectedWorkspaceStatus: string = 'RUNNING';
 
-        return new Promise((resolve, reject) => {
+        return new Cypress.Promise((resolve:any, reject:any) => {
 
             cy.request('GET', `/api/workspace/${workspaceNamespace}:${workspaceName}`)
                 .then(response => {

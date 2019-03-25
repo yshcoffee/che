@@ -6,6 +6,10 @@
       "target": "es5",
       "jsx": "react",
       "allowJs": true,
-      "types": ["cypress"]
+      // "types": ["cypress"],
+      "types": ["cypress", "reflect-metadata"],
+      "lib": ["es6", "dom"],
+      "experimentalDecorators": true,
+      "emitDecoratorMetadata": true
     }
   }
