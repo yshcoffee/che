@@ -95,7 +95,7 @@ export class Editor {
         return lineCoordinate;
     }
 
-    public addAttributeToLines():  Promise<number> {
+    public addAttributeToLines(): PromiseLike<number>  {
 
         return new Cypress.Promise((resolve:any, reject:any) => {
             let elementsArray: Array<JQuery<HTMLElement>> = new Array();

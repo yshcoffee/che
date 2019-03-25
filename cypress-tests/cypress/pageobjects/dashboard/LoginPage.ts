@@ -1,3 +1,7 @@
+import { Dashboard } from "./Dashboard";
+import "reflect-metadata";
+import { injectable, inject} from "inversify"
+
 /*********************************************************************
  * Copyright (c) 2018 Red Hat, Inc.
  *
@@ -13,7 +17,7 @@
 
 /// <reference types="Cypress" />
 
-
+@injectable()
 export class LoginPage implements LoginPage {
     private static readonly LOAD_PAGE_TIMEOUT: number = Cypress.env('load_page_timeout');
     private static readonly TEST_USER_NANE: string = Cypress.env('test_user_name');
@@ -23,6 +27,8 @@ export class LoginPage implements LoginPage {
     private static readonly USERNAME_FIELD: string = "#username";
     private static readonly PASSWORD_FIELD: string = "#password";
     private static readonly LOGIN_BUTTON: string = "[name='login']";
+
+    private readonly dashboard: Dashboard = new Dashboard();
 
     private typeToInputField(text: string, fieldLocator: string) {
         cy.get(fieldLocator)
@@ -62,11 +68,16 @@ export class LoginPage implements LoginPage {
     }
 
     login() {
-        this.waitPage();
-        this.typeUsername(LoginPage.TEST_USER_NANE);
-        this.typePassword(LoginPage.TEST_USER_PASSWORD);
-        this.clickOnLoginButton();
-        this.waitPageAbcence();
+        // this.waitPage();
+        // this.typeUsername(LoginPage.TEST_USER_NANE);
+        // this.typePassword(LoginPage.TEST_USER_PASSWORD);
+        // this.clickOnLoginButton();
+        // this.waitPageAbcence();
+        
+        this.dashboard.openDashboard();
+        this.dashboard.waitLoaderPage();
+        this.dashboard.waitLoaderPageAbcence()
+        this.dashboard.waitDashboard();
     }
 
 }

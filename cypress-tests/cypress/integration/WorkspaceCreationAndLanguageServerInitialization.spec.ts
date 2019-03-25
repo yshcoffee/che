@@ -25,11 +25,15 @@ import { Ide } from "../pageobjects/ide/Ide";
 import { ProjectTree } from "../pageobjects/ide/ProjectTree";
 import { Editor } from "../pageobjects/ide/Editor";
 import { NameGenerator } from "../utils/NameGenerator";
+import { ILoginPage } from "../pageobjects/dashboard/interfaces/ILoginPage";
+import { cypressContainer } from "../utils/inversifyJS/inversify.config";
+import { TYPES } from "../utils/inversifyJS/types";
 
 const workspaceName: string = NameGenerator.generate("wksp-test-", 5);
 const namespace: string = "che";
 
-const loginPage: LoginPage = new LoginPage();
+const loginPage: ILoginPage = cypressContainer.get<ILoginPage>(TYPES.ILoginPage);
+
 const dashboard: Dashboard = new Dashboard();
 const workspaces: Workspaces = new Workspaces();
 const newWorkspace: NewWorkspace = new NewWorkspace();
@@ -42,10 +46,13 @@ describe("E2E test", () => {
 
     context("Prepare dashboard", () => {
         it("Open dashboard", () => {
-            dashboard.openDashboard();
-            dashboard.waitLoaderPage();
-            dashboard.waitLoaderPageAbcence()
-            dashboard.waitDashboard();
+            // dashboard.openDashboard();
+            // dashboard.waitLoaderPage();
+            // dashboard.waitLoaderPageAbcence()
+            // dashboard.waitDashboard();
+
+            loginPage.login();
+
         })
 
     })

@@ -15,7 +15,7 @@ import { Promise, resolve, reject } from "bluebird";
 
 export class TestWorkspaceUtil {
 
-    private waitRunningStatus(workspaceNamespace: string, workspaceName: string, attempt: number): Promise<void> {
+    private waitRunningStatus(workspaceNamespace: string, workspaceName: string, attempt: number): PromiseLike<void> {
         const maximumAttempts: number = 300;
         const delayBetweenAttempts: number = 5000;
         const expectedWorkspaceStatus: string = 'RUNNING';
@@ -49,7 +49,7 @@ export class TestWorkspaceUtil {
     }
 
 
-    waitWorkspaceRunning(workspaceNamespace: string, workspaceName: string): Promise<void> {
+    waitWorkspaceRunning(workspaceNamespace: string, workspaceName: string): PromiseLike<void> {
         let attempt: number = 0;
         return this.waitRunningStatus(workspaceNamespace, workspaceName, attempt)
     }
