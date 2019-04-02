@@ -2,6 +2,7 @@ import { Container } from "inversify";
 import { ILoginPage } from "../pageobjects/dashboard/interfaces/ILoginPage";
 import { TYPES } from "./types";
 import { LoginPageSingleUser } from "../pageobjects/dashboard/LoginPageSingleUser";
+import { LoginPageMultiUser } from "../pageobjects/dashboard/LoginPageMultiUser";
 
 /*********************************************************************
  * Copyright (c) 2018 Red Hat, Inc.
@@ -15,7 +16,8 @@ import { LoginPageSingleUser } from "../pageobjects/dashboard/LoginPageSingleUse
 
 const e2eContainer = new Container();
 
-e2eContainer.bind<ILoginPage>(TYPES.ILoginPage).to(LoginPageSingleUser)
+// e2eContainer.bind<ILoginPage>(TYPES.ILoginPage).to(LoginPageSingleUser)
+e2eContainer.bind<ILoginPage>(TYPES.ILoginPage).to(LoginPageMultiUser)
 
 
 export {e2eContainer}
