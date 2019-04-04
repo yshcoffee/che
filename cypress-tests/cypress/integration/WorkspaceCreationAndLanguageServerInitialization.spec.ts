@@ -29,6 +29,7 @@ import { e2eContainer } from "../inversifyJS/inversify.config";
 import { TYPES } from "../inversifyJS/types";
 import { WorkspaceDetails } from "../pageobjects/dashboard/workspace-details/WorkspaceDetails";
 import { WorkspaceDetailsPlugins } from "../pageobjects/dashboard/workspace-details/WorkspaceDetailsPlugins";
+import { KeycloakServiceClient } from "../utils/keycloak/KeycloakServiceClient";
 
 const workspaceName: string = NameGenerator.generate("wksp-test-", 5);
 const namespace: string = "che";
@@ -48,6 +49,10 @@ const workspaceDetailsPlugins: WorkspaceDetailsPlugins = new WorkspaceDetailsPlu
 describe("E2E test", () => {
 
     context("Prepare dashboard", () => {
+        it("Authorization request", ()=>{
+            KeycloakServiceClient.doAuthorizationRequest();
+        })
+
         it("Open dashboard", () => {
             loginPage.login();
             dashboard.waitLoaderPage();
