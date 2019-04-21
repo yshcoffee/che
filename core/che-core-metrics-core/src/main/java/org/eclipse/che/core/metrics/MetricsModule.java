@@ -53,5 +53,7 @@ public class MetricsModule extends AbstractModule {
     meterMultibinder.addBinding().to(ApiResponseCounter.class);
     meterMultibinder.addBinding().to(ProcessMemoryMetrics.class);
     meterMultibinder.addBinding().to(ProcessThreadMetrics.class);
+    meterMultibinder.addBinding().to(DbcpPoolMeterBinder.class);
+    meterMultibinder.addBinding().to(PostgreSQLDatabaseMetricsBinder.class);
   }
 }

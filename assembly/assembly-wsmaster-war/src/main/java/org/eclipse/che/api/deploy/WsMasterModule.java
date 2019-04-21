@@ -25,6 +25,7 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Set;
 import javax.sql.DataSource;
+import org.apache.tomcat.dbcp.dbcp2.BasicDataSource;
 import org.eclipse.che.agent.exec.client.ExecAgentClientFactory;
 import org.eclipse.che.api.core.notification.RemoteSubscriptionStorage;
 import org.eclipse.che.api.core.rest.CheJsonProvider;
@@ -361,6 +362,7 @@ public class WsMasterModule extends AbstractModule {
 
     bind(TemplateProcessor.class).to(STTemplateProcessorImpl.class);
     bind(DataSource.class).toProvider(org.eclipse.che.core.db.JndiDataSourceProvider.class);
+    bind(BasicDataSource.class).toProvider(org.eclipse.che.core.db.BasicDataSourceProvider.class);
 
     install(new org.eclipse.che.multiuser.api.permission.server.jpa.SystemPermissionsJpaModule());
     install(new org.eclipse.che.multiuser.api.permission.server.PermissionsModule());

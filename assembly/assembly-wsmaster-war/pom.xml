@@ -24,6 +24,8 @@
     <name>Che IDE :: Compiling WS Master WAR</name>
     <properties>
         <generated.sources.directory>${project.build.directory}/generated-sources/gen</generated.sources.directory>
+        <io.micrometer.version>1.1.4</io.micrometer.version>
+        <org.postgresql.version>42.2.2</org.postgresql.version>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
     </properties>
     <dependencies>

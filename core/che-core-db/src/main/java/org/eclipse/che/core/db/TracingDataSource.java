@@ -17,6 +17,7 @@ import java.io.PrintWriter;
 import java.sql.Connection;
 import java.sql.SQLException;
 import java.sql.SQLFeatureNotSupportedException;
+import java.sql.Wrapper;
 import java.util.Collections;
 import java.util.logging.Logger;
 import javax.sql.DataSource;
@@ -51,11 +52,25 @@ public class TracingDataSource implements DataSource {
 
   @Override
   public <T> T unwrap(Class<T> iface) throws SQLException {
-    return delegate.unwrap(iface);
+
+    if (delegate == null) {
+      throw new SQLException("The underlying DataSource is invalid or cannot be found");
+    } else if (iface.isInstance(delegate)) {
+      return iface.cast(delegate);
+    } else if (delegate instanceof Wrapper) {
+      return delegate.unwrap(iface);
+    } else {
+      throw new SQLException("The requested interface cannot be unwrapped");
+    }
   }
 
   @Override
   public boolean isWrapperFor(Class<?> iface) throws SQLException {
+    if (delegate == null) {
+      throw new SQLException("The underlying DataSource is invalid or cannot be found");
+    } else if (iface.isInstance(delegate)) {
+      return true;
+    }
     return delegate.isWrapperFor(iface);
   }
 
