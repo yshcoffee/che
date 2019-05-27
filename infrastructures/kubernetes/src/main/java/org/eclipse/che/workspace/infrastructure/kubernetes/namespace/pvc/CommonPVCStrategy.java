@@ -203,7 +203,7 @@ public class CommonPVCStrategy implements WorkspaceVolumesStrategy {
       log.debug("Creating PVC for workspace '{}'", workspaceId);
       pvcs.create(commonPVC);
       if (waitBound) {
-        log.debug("Waiting PVC for workspace '{}' to be bound", workspaceId);
+        log.debug("Waiting for PVC for workspace '{}' to be bound", workspaceId);
         pvcs.waitBound(commonPVC.getMetadata().getName(), timeoutMillis);
       }
     }

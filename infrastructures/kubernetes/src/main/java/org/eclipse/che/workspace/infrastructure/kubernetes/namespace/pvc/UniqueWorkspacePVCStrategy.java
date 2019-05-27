@@ -146,7 +146,7 @@ public class UniqueWorkspacePVCStrategy implements WorkspaceVolumesStrategy {
     k8sClaims.createIfNotExist(k8sEnv.getPersistentVolumeClaims().values());
 
     if (waitBound) {
-      LOG.debug("Waiting PVCs for workspace '{}' to be bound", workspaceId);
+      LOG.debug("Waiting for PVC(s) of workspace '{}' to be bound", workspaceId);
       for (PersistentVolumeClaim pvc : k8sEnv.getPersistentVolumeClaims().values()) {
         k8sClaims.waitBound(pvc.getMetadata().getName(), timeoutMillis);
       }
