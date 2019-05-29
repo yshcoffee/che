@@ -48,7 +48,8 @@ public class KubernetesPersistentVolumeClaims {
   private final KubernetesClientFactory clientFactory;
 
   KubernetesPersistentVolumeClaims(
-      String namespace, String workspaceId, KubernetesClientFactory clientFactory) {
+      String namespace, String workspaceId, KubernetesClientFactory clientFactory,
+      KubernetesEvents events) {
     this.namespace = namespace;
     this.clientFactory = clientFactory;
     this.workspaceId = workspaceId;

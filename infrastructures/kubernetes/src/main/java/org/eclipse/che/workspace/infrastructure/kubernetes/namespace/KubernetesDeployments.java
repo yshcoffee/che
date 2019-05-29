@@ -106,15 +106,15 @@ public class KubernetesDeployments {
   private final KubernetesClientFactory clientFactory;
   private final ConcurrentLinkedQueue<PodActionHandler> podActionHandlers;
   private final ConcurrentLinkedQueue<PodEventHandler> containerEventsHandlers;
-  private Watch podWatch;
-  private Watch containerWatch;
-  private Date watcherInitializationDate;
+  private final KubernetesEvents events;
 
   protected KubernetesDeployments(
-      String namespace, String workspaceId, KubernetesClientFactory clientFactory) {
+      String namespace, String workspaceId, KubernetesClientFactory clientFactory,
+      KubernetesEvents events) {
     this.namespace = namespace;
     this.workspaceId = workspaceId;
     this.clientFactory = clientFactory;
+    this.events = events;
     this.containerEventsHandlers = new ConcurrentLinkedQueue<>();
     this.podActionHandlers = new ConcurrentLinkedQueue<>();
   }

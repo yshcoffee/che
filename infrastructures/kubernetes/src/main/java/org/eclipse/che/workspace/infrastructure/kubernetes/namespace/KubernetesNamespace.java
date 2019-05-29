@@ -60,6 +60,7 @@ public class KubernetesNamespace {
   private final String workspaceId;
   private final String name;
 
+  private final KubernetesEvents events;
   private final KubernetesDeployments deployments;
   private final KubernetesServices services;
   private final KubernetesPersistentVolumeClaims pvcs;
@@ -73,12 +74,14 @@ public class KubernetesNamespace {
       KubernetesClientFactory clientFactory,
       String workspaceId,
       String name,
+      KubernetesEvents events,
       KubernetesDeployments deployments,
       KubernetesServices services,
       KubernetesPersistentVolumeClaims pvcs,
       KubernetesIngresses kubernetesIngresses,
       KubernetesSecrets secrets,
       KubernetesConfigsMaps configMaps) {
+    this.events = events;
     this.clientFactory = clientFactory;
     this.workspaceId = workspaceId;
     this.name = name;
@@ -95,9 +98,10 @@ public class KubernetesNamespace {
     this.clientFactory = clientFactory;
     this.workspaceId = workspaceId;
     this.name = name;
-    this.deployments = new KubernetesDeployments(name, workspaceId, clientFactory);
+    this.events = new KubernetesEvents(name, workspaceId, clientFactory);
+    this.deployments = new KubernetesDeployments(name, workspaceId, clientFactory, events);
     this.services = new KubernetesServices(name, workspaceId, clientFactory);
-    this.pvcs = new KubernetesPersistentVolumeClaims(name, workspaceId, clientFactory);
+    this.pvcs = new KubernetesPersistentVolumeClaims(name, workspaceId, clientFactory, events);
     this.ingresses = new KubernetesIngresses(name, workspaceId, clientFactory);
     this.secrets = new KubernetesSecrets(name, workspaceId, clientFactory);
     this.configMaps = new KubernetesConfigsMaps(name, workspaceId, clientFactory);
