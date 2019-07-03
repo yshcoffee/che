@@ -28,7 +28,8 @@ const CLASSES = {
     QuickOpenContainer: 'QuickOpenContainer',
     PreviewWidget: 'PreviewWidget',
     GitHubPlugin: 'GitHubPlugin',
-    RightToolbar: 'RightToolbar'
+    RightToolbar: 'RightToolbar',
+    GitPlugin: 'GitPlugin'
 };
 
 export { TYPES, CLASSES };
