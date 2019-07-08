@@ -28,13 +28,14 @@ import { QuickOpenContainer } from './pageobjects/ide/QuickOpenContainer';
 import { PreviewWidget } from './pageobjects/ide/PreviewWidget';
 import { GitHubPlugin } from './pageobjects/ide/GitHubPlugin';
 import { RightToolbar } from './pageobjects/ide/RightToolbar';
+import { VsCodeGitPlugin } from './pageobjects/ide/VsCodeGitPlugin';
 
 const e2eContainer = new Container();
 
 e2eContainer.bind<IDriver>(TYPES.Driver).to(ChromeDriver).inSingletonScope();
 e2eContainer.bind<ILoginPage>(TYPES.LoginPage).to(SingleUserLoginPage).inSingletonScope();
-
 e2eContainer.bind<DriverHelper>(CLASSES.DriverHelper).to(DriverHelper).inSingletonScope();
+e2eContainer.bind<VsCodeGitPlugin>(CLASSES.VsCodeGitPlugin).to(VsCodeGitPlugin).inSingletonScope();
 e2eContainer.bind<Dashboard>(CLASSES.Dashboard).to(Dashboard).inSingletonScope();
 e2eContainer.bind<Workspaces>(CLASSES.Workspaces).to(Workspaces).inSingletonScope();
 e2eContainer.bind<NewWorkspace>(CLASSES.NewWorkspace).to(NewWorkspace).inSingletonScope();

@@ -29,7 +29,7 @@ const CLASSES = {
     PreviewWidget: 'PreviewWidget',
     GitHubPlugin: 'GitHubPlugin',
     RightToolbar: 'RightToolbar',
-    GitPlugin: 'GitPlugin'
+    VsCodeGitPlugin: 'VsCodeGitPlugin'
 };
 
 export { TYPES, CLASSES };
