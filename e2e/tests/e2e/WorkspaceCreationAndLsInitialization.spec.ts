@@ -11,25 +11,18 @@
 import { e2eContainer } from '../../inversify.config';
 import { TYPES, CLASSES } from '../../inversify.types';
 import { ILoginPage } from '../../pageobjects/login/ILoginPage';
-import { Dashboard } from '../../pageobjects/dashboard/Dashboard';
 import { NameGenerator } from '../../utils/NameGenerator';
 import { NewWorkspace } from '../../pageobjects/dashboard/NewWorkspace';
 import { Ide } from '../../pageobjects/ide/Ide';
-import { ProjectTree } from '../../pageobjects/ide/ProjectTree';
-import { Editor } from '../../pageobjects/ide/Editor';
-
+import { TopMenu } from '../../pageobjects/ide/TopMenu';
 const workspaceName: string = NameGenerator.generate('wksp-test-', 5);
 const namespace: string = 'che';
 const sampleName: string = 'console-java-simple';
-const fileFolderPath: string = `${sampleName}/src/main/java/org/eclipse/che/examples`;
-const tabTitle: string = 'HelloWorld.java';
-
+const topMenu: TopMenu = e2eContainer.get(CLASSES.TopMenu);
 const loginPage: ILoginPage = e2eContainer.get<ILoginPage>(TYPES.LoginPage);
-const dashboard: Dashboard = e2eContainer.get(CLASSES.Dashboard);
 const newWorkspace: NewWorkspace = e2eContainer.get(CLASSES.NewWorkspace);
 const ide: Ide = e2eContainer.get(CLASSES.Ide);
-const projectTree: ProjectTree = e2eContainer.get(CLASSES.ProjectTree);
-const editor: Editor = e2eContainer.get(CLASSES.Editor);
+
 
 suite('E2E', async () => {
 
@@ -54,45 +47,17 @@ suite('E2E', async () => {
             await ide.waitWorkspaceAndIde(namespace, workspaceName);
         });
 
-        test('Open project tree container', async () => {
-            await projectTree.openProjectTreeContainer();
-        });
+        test('Check Dialog About', async () => {
+            suite('Validation of workspace start, build and run', async () => {
 
-        test('Wait project imported', async () => {
-            await projectTree.waitProjectImported(sampleName, 'src');
-        });
+                test('Run debug and check application stop in the breakpoint', async () => {
 
-        test('Expand project and open file in editor', async () => {
-            await projectTree.expandPathAndOpenFile(fileFolderPath, tabTitle);
-        });
+                    await topMenu.selectOption('Help', 'About');
 
-        test('Check "Java Language Server" initialization by statusbar', async () => {
-            await ide.waitStatusBarContains('Starting Java Language Server');
-            await ide.waitStatusBarTextAbsence('Starting Java Language Server');
-        });
+                });
+            });
 
-        test('Check "Java Language Server" initialization by suggestion invoking', async () => {
-            await ide.closeAllNotifications();
-            await editor.waitEditorAvailable(tabTitle);
-            await editor.clickOnTab(tabTitle);
-            await editor.waitEditorAvailable(tabTitle);
-            await editor.waitTabFocused(tabTitle);
-            await editor.moveCursorToLineAndChar(tabTitle, 6, 20);
-            await editor.pressControlSpaceCombination(tabTitle);
-            await editor.waitSuggestion(tabTitle, 'append(CharSequence csq, int start, int end) : PrintStream');
-        });
 
+        });
     });
-
-    suite('Stop and remove workspace', async () => {
-        test('Stop workspace', async () => {
-            await dashboard.stopWorkspaceByUI(workspaceName);
-        });
-
-        test('Delete workspace', async () => {
-            await dashboard.deleteWorkspaceByUI(workspaceName);
-        });
-
-    });
-
 });
