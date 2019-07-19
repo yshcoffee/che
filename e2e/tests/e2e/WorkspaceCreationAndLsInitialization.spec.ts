@@ -52,7 +52,7 @@ suite('E2E', async () => {
 
                 test('Run debug and check application stop in the breakpoint', async () => {
 
-                    await topMenu.selectOption('Help', 'About');
+                    await topMenu.selectOption('Help', 'Ablygfdgdfgrout');
 
                 });
             });
