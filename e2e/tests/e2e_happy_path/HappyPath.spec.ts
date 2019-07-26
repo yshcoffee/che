@@ -23,7 +23,7 @@ import { By, Key } from 'selenium-webdriver';
 import { Terminal } from '../../pageobjects/ide/Terminal';
 import { DebugView } from '../../pageobjects/ide/DebugView';
 import { WarningDialog } from '../../pageobjects/ide/WarningDialog';
-
+import * as fs from 'fs';
 const driverHelper: DriverHelper = e2eContainer.get(CLASSES.DriverHelper);
 const ide: Ide = e2eContainer.get(CLASSES.Ide);
 const projectTree: ProjectTree = e2eContainer.get(CLASSES.ProjectTree);
@@ -90,7 +90,22 @@ suite('Validation of workspace start, build and run', async () => {
     });
 
     test('Check the running application', async () => {
-        await previewWidget.waitContentAvailable(SpringAppLocators.springTitleLocator, 60000, 10000);
+        try {
+            await previewWidget.waitContentAvailable(SpringAppLocators.springTitleLocator, 60000, 10000);
+        } catch (e) {
+      await driverHelper.getDriver().navigate().to('chrome://settings/content/popups');
+      const testReportDirPath: string = './report';
+              const screenshotFileName: string = 'chrome-settings.png';
+      if (!fs.existsSync(testReportDirPath)) {
+        await fs.mkdirSync(testReportDirPath);
+              }
+            // take screenshot and write to file
+            const screenshot: string = await driverHelper.getDriver().takeScreenshot();
+            const screenshotStream = fs.createWriteStream(testReportDirPath + screenshotFileName);
+            screenshotStream.write(new Buffer(screenshot, 'base64'));
+            screenshotStream.end();
+            await driverHelper.navigateTo(workspaceUrl);
+        }
     });
 
     test('Close preview widget', async () => {
