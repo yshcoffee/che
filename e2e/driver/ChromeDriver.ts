@@ -10,7 +10,7 @@
 import 'chromedriver';
 import 'reflect-metadata';
 import { injectable } from 'inversify';
-import { ThenableWebDriver, Builder } from 'selenium-webdriver';
+import { ThenableWebDriver, Builder, logging} from 'selenium-webdriver';
 import { IDriver } from './IDriver';
 import { Options } from 'selenium-webdriver/chrome';
 import { TestConstants } from '../TestConstants';
@@ -21,16 +21,18 @@ export class ChromeDriver implements IDriver {
 
     constructor() {
         const isHeadless: boolean = TestConstants.TS_SELENIUM_HEADLESS;
+        const prefs = new logging.Preferences();
+        prefs.setLevel(logging.Type.PERFORMANCE, logging.Level.ALL);
         let options: Options = new Options()
             .addArguments('--no-sandbox')
             .addArguments('--disable-web-security')
             .addArguments('--allow-running-insecure-content');
-
+        options.setLoggingPrefs(prefs);
         if (isHeadless) {
             options = options.addArguments('headless');
         }
 
-        this.driver = new Builder()
+        this.driver = new Builder().withCapabilities(prefs)
             .forBrowser('chrome')
             .setChromeOptions(options)
             .build();
