@@ -32,7 +32,6 @@ import org.eclipse.che.api.workspace.server.model.impl.devfile.EntrypointImpl;
 import org.eclipse.che.api.workspace.server.model.impl.devfile.EnvImpl;
 import org.eclipse.che.api.workspace.server.model.impl.devfile.ProjectImpl;
 import org.eclipse.che.api.workspace.server.model.impl.devfile.SourceImpl;
-import org.eclipse.che.api.workspace.server.model.impl.stack.StackImpl;
 import org.eclipse.che.commons.test.db.H2DBTestServer;
 import org.eclipse.che.commons.test.db.H2JpaCleaner;
 import org.eclipse.che.commons.test.db.PersistTestModuleBuilder;
@@ -45,12 +44,9 @@ import org.eclipse.che.core.db.h2.jpa.eclipselink.H2ExceptionHandler;
 import org.eclipse.che.core.db.schema.SchemaInitializer;
 import org.eclipse.che.core.db.schema.impl.flyway.FlywaySchemaInitializer;
 import org.eclipse.che.multiuser.api.permission.server.AbstractPermissionsDomain;
-import org.eclipse.che.multiuser.api.permission.server.spi.PermissionsDao;
 import org.eclipse.che.multiuser.permission.workspace.server.model.impl.WorkerImpl;
 import org.eclipse.che.multiuser.permission.workspace.server.spi.WorkerDao;
-import org.eclipse.che.multiuser.permission.workspace.server.spi.tck.StackPermissionsDaoTest;
 import org.eclipse.che.multiuser.permission.workspace.server.spi.tck.WorkerDaoTest;
-import org.eclipse.che.multiuser.permission.workspace.server.stack.StackPermissionsImpl;
 import org.h2.Driver;
 
 /** @author Yevhenii Voevodin */
@@ -70,12 +66,10 @@ public class JpaTckModule extends TckModule {
                 WorkspaceConfigImpl.class,
                 ProjectConfigImpl.class,
                 EnvironmentImpl.class,
-                StackPermissionsImpl.class,
                 WorkerImpl.class,
                 MachineConfigImpl.class,
                 SourceStorageImpl.class,
                 ServerConfigImpl.class,
-                StackImpl.class,
                 CommandImpl.class,
                 RecipeImpl.class,
                 VolumeImpl.class,
@@ -94,15 +88,6 @@ public class JpaTckModule extends TckModule {
                 "org.eclipse.che.api.workspace.server.model.impl.ProjectConfigImpl$Attribute")
             .setExceptionHandler(H2ExceptionHandler.class)
             .build());
-
-    bind(new TypeLiteral<AbstractPermissionsDomain<StackPermissionsImpl>>() {})
-        .to(StackPermissionsDaoTest.TestDomain.class);
-    bind(new TypeLiteral<PermissionsDao<StackPermissionsImpl>>() {})
-        .to(JpaStackPermissionsDao.class);
-    bind(new TypeLiteral<TckRepository<StackPermissionsImpl>>() {})
-        .toInstance(new JpaTckRepository<>(StackPermissionsImpl.class));
-    bind(new TypeLiteral<TckRepository<StackImpl>>() {})
-        .toInstance(new JpaTckRepository<>(StackImpl.class));
 
     bind(new TypeLiteral<AbstractPermissionsDomain<WorkerImpl>>() {})
         .to(WorkerDaoTest.TestDomain.class);

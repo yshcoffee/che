@@ -113,8 +113,6 @@ public class WorkspaceManager {
   public WorkspaceImpl createWorkspace(
       WorkspaceConfig config, String namespace, Map<String, String> attributes)
       throws ServerException, NotFoundException, ConflictException, ValidationException {
-    TracingTags.STACK_ID.set(() -> attributes.getOrDefault("stackId", "no stack"));
-
     requireNonNull(config, "Required non-null config");
     requireNonNull(namespace, "Required non-null namespace");
     validator.validateConfig(config);
@@ -153,8 +151,6 @@ public class WorkspaceManager {
       Map<String, String> attributes,
       FileContentProvider contentProvider)
       throws ServerException, NotFoundException, ConflictException, ValidationException {
-    TracingTags.STACK_ID.set(() -> attributes.getOrDefault("stackId", "no stack"));
-
     requireNonNull(devfile, "Required non-null devfile");
     requireNonNull(namespace, "Required non-null namespace");
     validator.validateAttributes(attributes);
@@ -341,10 +337,6 @@ public class WorkspaceManager {
     }
 
     Optional<WorkspaceImpl> workspaceOpt = workspaceDao.remove(workspaceId);
-    workspaceOpt.ifPresent(
-        workspace ->
-            TracingTags.STACK_ID.set(
-                workspace.getAttributes().getOrDefault("stackId", "no stack")));
 
     LOG.info("Workspace '{}' removed by user '{}'", workspaceId, sessionUserNameOrUndefined());
   }
