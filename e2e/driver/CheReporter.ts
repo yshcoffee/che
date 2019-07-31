@@ -15,6 +15,7 @@ import * as fs from 'fs';
 import { TestConstants } from '../TestConstants';
 import { logging } from 'selenium-webdriver';
 import { DriverHelper } from '../utils/DriverHelper';
+import { By } from 'selenium-webdriver';
 
 const driver: IDriver = e2eContainer.get(TYPES.Driver);
 const driverHelper: DriverHelper = e2eContainer.get(CLASSES.DriverHelper);
@@ -74,6 +75,11 @@ class CheReporter extends mocha.reporters.Spec {
       // create reporter dir if not exist
       const reportDirExists: boolean = fs.existsSync(reportDirPath);
 
+      const taskBarErrorIconLocator: string = 'div#theia-statusBar div>span.fa-times-circle';
+      try {await driverHelper.waitAndClick(By.css(taskBarErrorIconLocator)); } catch (e) {
+        console.error(e + 'Cannot click on log message bar');
+      }
+
       if (!reportDirExists) {
         fs.mkdirSync(reportDirPath);
       }
@@ -85,11 +91,13 @@ class CheReporter extends mocha.reporters.Spec {
         fs.mkdirSync(testReportDirPath);
       }
 
+
+
       // take screenshot and write to file
       const screenshot: string = await driver.get().takeScreenshot();
       const screenshotStream = fs.createWriteStream(screenshotFileName);
-      screenshotStream.write(new Buffer(screenshot, 'base64'));
-      screenshotStream.end();
+      await screenshotStream.write(new Buffer(screenshot, 'base64'));
+      await screenshotStream.end();
 
       // take pagesource and write to file
       const pageSource: string = await driver.get().getPageSource();
