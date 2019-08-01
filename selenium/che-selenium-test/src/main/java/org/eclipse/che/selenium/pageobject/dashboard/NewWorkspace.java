@@ -16,9 +16,9 @@ import static java.util.Arrays.asList;
 import static java.util.stream.Collectors.toList;
 import static org.eclipse.che.selenium.core.constant.TestTimeoutsConstants.WIDGET_TIMEOUT_SEC;
 import static org.eclipse.che.selenium.pageobject.dashboard.NewWorkspace.Locators.BOTTOM_CREATE_BUTTON_XPATH;
+import static org.eclipse.che.selenium.pageobject.dashboard.NewWorkspace.Locators.DEVFILE_ROW_XPATH;
 import static org.eclipse.che.selenium.pageobject.dashboard.NewWorkspace.Locators.ERROR_MESSAGE;
 import static org.eclipse.che.selenium.pageobject.dashboard.NewWorkspace.Locators.ORGANIZATIONS_LIST_ID;
-import static org.eclipse.che.selenium.pageobject.dashboard.NewWorkspace.Locators.DEVFILE_ROW_XPATH;
 import static org.eclipse.che.selenium.pageobject.dashboard.NewWorkspace.Locators.TOOLBAR_TITLE_ID;
 import static org.eclipse.che.selenium.pageobject.dashboard.NewWorkspace.Locators.TOP_CREATE_BUTTON_XPATH;
 import static org.eclipse.che.selenium.pageobject.dashboard.NewWorkspace.Locators.TOP_DROPDOWN_BUTTON_XPATH;
@@ -177,7 +177,9 @@ public class NewWorkspace {
   }
 
   public boolean isDevfileVisible(Devfile devfile) {
-    return seleniumWebDriver.findElements(By.xpath(format(DEVFILE_ROW_XPATH, devfile.getId()))).size()
+    return seleniumWebDriver
+            .findElements(By.xpath(format(DEVFILE_ROW_XPATH, devfile.getId())))
+            .size()
         > 0;
   }
 
@@ -322,9 +324,9 @@ public class NewWorkspace {
 
   public void waitDevfiles(List<Devfile> expectedDevfiles) {
     expectedDevfiles.forEach(
-        stack ->
+        devfile ->
             seleniumWebDriverHelper.waitPresence(
-                By.xpath(format("//div[@data-devfile-id='%s']", stack.getId()))));
+                By.xpath(format("//div[@data-devfile-id='%s']", devfile.getId()))));
   }
 
   public void waitDevfilesCount(int expectedCount) {
@@ -339,11 +341,12 @@ public class NewWorkspace {
 
   public void waitDevfilesNotPresent(List<Devfile> devfilesIdForChecking) {
     devfilesIdForChecking.forEach(
-        stack ->
+        devfile ->
             webDriverWaitFactory
                 .get()
                 .until(
-                    (ExpectedCondition<Boolean>) driver -> !getAvailableDevfiles().contains(stack)));
+                    (ExpectedCondition<Boolean>)
+                        driver -> !getAvailableDevfiles().contains(devfile)));
   }
 
   public void waitDevfilesOrder(List<Devfile> expectedOrder) {

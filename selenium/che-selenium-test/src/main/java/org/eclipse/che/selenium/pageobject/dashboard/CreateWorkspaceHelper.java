@@ -53,10 +53,7 @@ public class CreateWorkspaceHelper {
   }
 
   public TestWorkspace createWorkspaceFromStack(
-      Devfile devfile,
-      String workspaceName,
-      List<String> projectNames,
-      Double machineRam) {
+      Devfile devfile, String workspaceName, List<String> projectNames, Double machineRam) {
     prepareWorkspace(devfile, workspaceName, machineRam);
 
     projectSourcePage.clickOnAddOrImportProjectButton();

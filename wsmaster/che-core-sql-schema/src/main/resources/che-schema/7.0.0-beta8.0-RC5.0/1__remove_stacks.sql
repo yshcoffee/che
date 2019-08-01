@@ -11,4 +11,5 @@
 --
 
 DROP TABLE stack_components;
+DROP TABLE stack_tags;
 DROP TABLE stack;
