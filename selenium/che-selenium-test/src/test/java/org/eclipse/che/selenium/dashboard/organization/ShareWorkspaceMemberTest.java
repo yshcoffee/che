@@ -179,7 +179,7 @@ public class ShareWorkspaceMemberTest {
   }
 
   private void createWorkspace(String workspaceName) {
-    createWorkspaceHelper.createWorkspaceFromStackWithProject(
+    createWorkspaceHelper.createWorkspaceFromDevfileWithProject(
         Devfile.JAVA_MAVEN, workspaceName, PROJECT_NAME);
 
     ide.switchToIdeAndWaitWorkspaceIsReadyToUse();

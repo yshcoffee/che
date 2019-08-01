@@ -66,7 +66,7 @@ public class TheiaBuildPluginTest {
   @BeforeClass
   public void prepare() {
     dashboard.open();
-    createWorkspaceHelper.createWorkspaceFromStackWithoutProject(Devfile.GO, WORKSPACE_NAME);
+    createWorkspaceHelper.createWorkspaceFromDevfileWithoutProject(Devfile.GO, WORKSPACE_NAME);
 
     theiaIde.switchToIdeFrame();
     theiaIde.waitTheiaIde();

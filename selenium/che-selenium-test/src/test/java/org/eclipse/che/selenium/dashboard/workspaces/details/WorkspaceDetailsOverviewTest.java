@@ -115,9 +115,9 @@ public class WorkspaceDetailsOverviewTest {
     newWorkspace.waitPageLoad();
     newWorkspace.typeWorkspaceName(WORKSPACE_NAME);
 
-    selectStackAndCheckWorkspaceName(Devfile.APACHE_CAMEL);
+    selectDevfileAndCheckWorkspaceName(Devfile.APACHE_CAMEL);
 
-    selectStackAndCheckWorkspaceName(Devfile.JAVA_GRADLE);
+    selectDevfileAndCheckWorkspaceName(Devfile.JAVA_GRADLE);
 
     // create workspace
     addOrImportForm.clickOnAddOrImportProjectButton();
@@ -176,7 +176,7 @@ public class WorkspaceDetailsOverviewTest {
     workspaceOverview.waitExportWorkspaceFormClosed();
   }
 
-  private void selectStackAndCheckWorkspaceName(Devfile devfile) {
+  private void selectDevfileAndCheckWorkspaceName(Devfile devfile) {
     newWorkspace.selectDevfile(devfile);
     newWorkspace.waitDevfileSelected(devfile);
     newWorkspace.waitWorkspaceNameFieldValue(WORKSPACE_NAME);

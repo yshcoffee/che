@@ -43,7 +43,7 @@ public class Che7PreviewDevfileStartTest {
   @Test(groups = {OPENSHIFT})
   public void workspaceShouldBeStarted() {
     dashboard.open();
-    createWorkspaceHelper.createWorkspaceFromStackWithoutProject(Devfile.GO, WORKSPACE_NAME);
+    createWorkspaceHelper.createWorkspaceFromDevfileWithoutProject(Devfile.GO, WORKSPACE_NAME);
 
     theiaIde.switchToIdeFrame();
     theiaIde.waitTheiaIde();

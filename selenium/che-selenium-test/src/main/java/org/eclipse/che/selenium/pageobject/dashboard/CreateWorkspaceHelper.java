@@ -37,12 +37,12 @@ public class CreateWorkspaceHelper {
   @Inject private DefaultTestUser defaultTestUser;
   @Inject private TestWorkspaceProvider testWorkspaceProvider;
 
-  public TestWorkspace createWorkspaceFromStackWithProject(
+  public TestWorkspace createWorkspaceFromDevfileWithProject(
       Devfile devfile, String workspaceName, String projectName) {
     return createWorkspaceFromStack(devfile, workspaceName, ImmutableList.of(projectName), null);
   }
 
-  public TestWorkspace createWorkspaceFromStackWithoutProject(
+  public TestWorkspace createWorkspaceFromDevfileWithoutProject(
       Devfile devfile, String workspaceName) {
     return createWorkspaceFromStack(devfile, workspaceName, Collections.emptyList(), null);
   }
