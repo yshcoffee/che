@@ -10,5 +10,5 @@
 --   Red Hat, Inc. - initial API and implementation
 --
 
-DROP TABLE stack;
 DROP TABLE stack_components;
+DROP TABLE stack;
