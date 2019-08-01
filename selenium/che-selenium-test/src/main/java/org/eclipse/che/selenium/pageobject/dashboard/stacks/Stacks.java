@@ -48,7 +48,7 @@ public class Stacks {
     String SEARCH_STACK_FIELD_XPATH = "//input[@ng-placeholder='Search']";
     String STACKS_LIST_HEADERS_XPATH = "//div[@che-column-title]";
     String SORT_STACKS_BY_NAME_ID = "sort-stacks-by-name";
-    String BULK_CHECKBOX_XPATH = "//md-checkbox[@aria-label='Stack list']";
+    String BULK_CHECKBOX_XPATH = "//md-checkbox[@aria-label='Devfile list']";
     String NO_STACKS_FOUND_XPATH = "//span[text()='No stacks found.']";
     String STACK_ITEM_XPATH = "//div[contains(@class, 'stack-item-name')]";
     String STACK_ITEM_CHECKBOX_XPATH_PATTERN = "//div[@id='stack-name-%s']//md-checkbox";
@@ -59,7 +59,7 @@ public class Stacks {
     String STACK_ITEM_DESCRIPTION_XPATH_PATTERN =
         "//div[@id='stack-name-%s']//div[contains(@class,'stack-item-description')]";
     String STACK_ITEM_DELETE_BUTTON_XPATH_PATTERN =
-        "//div[@id='stack-name-%s']//a[@uib-tooltip='Delete Stack']";
+        "//div[@id='stack-name-%s']//a[@uib-tooltip='Delete Devfile']";
     String DUPLICATE_STACK_BUTTON_XPATH_PATTERN =
         "//div[@id='stack-name-%s']//a[@uib-tooltip='Duplicate stack']";
     String BUILD_STACK_FROM_RECIPE_DIALOG_XPATH = "//*[@title='Build stack from recipe']";

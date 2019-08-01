@@ -19,13 +19,13 @@ import org.eclipse.che.selenium.core.client.TestWorkspaceServiceClient;
 import org.eclipse.che.selenium.core.user.DefaultTestUser;
 import org.eclipse.che.selenium.pageobject.dashboard.CreateWorkspaceHelper;
 import org.eclipse.che.selenium.pageobject.dashboard.Dashboard;
-import org.eclipse.che.selenium.pageobject.dashboard.NewWorkspace.Stack;
+import org.eclipse.che.selenium.pageobject.dashboard.NewWorkspace.Devfile;
 import org.eclipse.che.selenium.pageobject.theia.TheiaIde;
 import org.eclipse.che.selenium.pageobject.theia.TheiaProjectTree;
 import org.testng.annotations.AfterClass;
 import org.testng.annotations.Test;
 
-public class Che7PreviewStackStartTest {
+public class Che7PreviewDevfileStartTest {
   private static final String WORKSPACE_NAME = NameGenerator.generate("wksp-", 5);
 
   @Inject private Dashboard dashboard;
@@ -43,7 +43,7 @@ public class Che7PreviewStackStartTest {
   @Test(groups = {OPENSHIFT})
   public void workspaceShouldBeStarted() {
     dashboard.open();
-    createWorkspaceHelper.createWorkspaceFromStackWithoutProject(Stack.GO, WORKSPACE_NAME);
+    createWorkspaceHelper.createWorkspaceFromStackWithoutProject(Devfile.GO, WORKSPACE_NAME);
 
     theiaIde.switchToIdeFrame();
     theiaIde.waitTheiaIde();
