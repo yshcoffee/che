@@ -194,11 +194,7 @@ suite('Display source code changes in the running application', async () => {
     test('Check changes are displayed', async () => {
         await ide.sleep(60000);
         await previewWidget.waitContentAvailableInAssoziatedWorkspace(SpringAppLocators.springTitleLocator, 60000, 10000);
-        await previewWidget.waitAndSwitchToWidgetFrame();
-        await previewWidget.waitAndClick(SpringAppLocators.springMenuButtonLocator);
-        await previewWidget.waitAndClick(SpringAppLocators.springErrorButtonLocator);
-        await previewWidget.waitVisibility(SpringAppLocators.springErrorMessageLocator);
-        await driverHelper.getDriver().switchTo().defaultContent();
+        checkErrorMessInApplicationController();
     });
 
     test('Close preview widget', async () => {
@@ -230,10 +226,7 @@ suite('Validation of debug functionality', async () => {
 
     test('Check content of the launched application', async () => {
         await previewWidget.waitContentAvailableInAssoziatedWorkspace(SpringAppLocators.springTitleLocator, 60000, 10000);
-        await previewWidget.waitAndSwitchToWidgetFrame();
-        await previewWidget.waitAndClick(SpringAppLocators.springMenuButtonLocator);
-        await previewWidget.waitAndClick(SpringAppLocators.springErrorButtonLocator);
-        await previewWidget.waitVisibility(SpringAppLocators.springErrorMessageLocator);
+        await checkErrorMessInApplicationController();
     });
 
     test('Open debug configuration file', async () => {
@@ -271,6 +264,14 @@ suite('Validation of debug functionality', async () => {
         }
     });
 });
+
+async function checkErrorMessInApplicationController() {
+    await previewWidget.waitAndSwitchToWidgetFrame();
+    await previewWidget.waitAndClick(SpringAppLocators.springMenuButtonLocator);
+    await previewWidget.waitAndClick(SpringAppLocators.springErrorButtonLocator);
+    await previewWidget.waitVisibility(SpringAppLocators.springErrorMessageLocator);
+    await driverHelper.getDriver().switchTo().defaultContent();
+}
 
 async function closeMainWindowAndSwitchToWorkspace(mainWindowHandle: string) {
     await driverHelper.switchToSecondWindow(mainWindowHandle);
