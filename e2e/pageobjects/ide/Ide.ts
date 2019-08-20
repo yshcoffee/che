@@ -234,7 +234,7 @@ export class Ide {
     }
 
     async getApplicationUrlFromNotification(notificationText: string) {
-        const notificationTextLocator: By = By.xpath(`//div[@class='theia-Notification']//p[contains(@id,'${notificationText}')]`);
+        const notificationTextLocator: By = By.xpath(`//div[@class='theia-notification-message']/span[contains(.,'${notificationText}')]`);
 
         let notification = await this.driverHelper.waitAndGetText(notificationTextLocator);
         let regexp: RegExp = new RegExp('^.*(https?://.*)$');
