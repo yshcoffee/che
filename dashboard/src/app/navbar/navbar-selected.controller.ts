@@ -30,6 +30,8 @@ export class NavBarSelectedCtrl {
     this.$mdSidenav = $mdSidenav;
   }
 
+  $onInit(): void { }
+
   /**
    * Close left navbar
    */
