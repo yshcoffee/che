@@ -271,6 +271,7 @@ async function closeMainWindowAndSwitchToWorkspace(mainWindowHandle: string) {
     await driverHelper.getDriver().switchTo().window(mainWindowHandle);
     await driverHelper.getDriver().close();
     await driverHelper.getDriver().switchTo().window(secondWindowHandle);
+    await driverHelper.getDriver().manage().window().maximize();
 }
 
 async function runTask(task: string) {
