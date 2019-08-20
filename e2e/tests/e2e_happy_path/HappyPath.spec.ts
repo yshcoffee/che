@@ -230,6 +230,10 @@ suite('Validation of debug functionality', async () => {
 
     test('Check content of the launched application', async () => {
         await previewWidget.waitContentAvailableInAssoziatedWorkspace(SpringAppLocators.springTitleLocator, 60000, 10000);
+        await previewWidget.waitAndSwitchToWidgetFrame();
+        await previewWidget.waitAndClick(SpringAppLocators.springMenuButtonLocator);
+        await previewWidget.waitAndClick(SpringAppLocators.springErrorButtonLocator);
+        await previewWidget.waitVisibility(SpringAppLocators.springErrorMessageLocator);
     });
 
     test('Open debug configuration file', async () => {
