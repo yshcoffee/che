@@ -256,9 +256,15 @@ suite('Validation of debug functionality', async () => {
         await debugView.clickOnDebugConfigurationDropDown();
         await debugView.clickOnDebugConfigurationItem('Debug (Launch) - Current File');
         await debugView.clickOnRunDebugButton();
-
         await previewWidget.refreshPage();
-        await editor.waitStoppedDebugBreakpoint(javaFileName, 32);
+        try
+        {
+            await editor.waitStoppedDebugBreakpoint(javaFileName, 32);
+        }
+        catch(err){
+            await previewWidget.refreshPage();
+            await editor.waitStoppedDebugBreakpoint(javaFileName, 32);
+        }
     });
 });
 

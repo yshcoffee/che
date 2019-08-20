@@ -228,7 +228,6 @@ export class Editor {
 
     async waitStoppedDebugBreakpoint(tabTitle: string, lineNumber: number, timeout: number = TestConstants.TS_SELENIUM_DEFAULT_TIMEOUT) {
         const stoppedDebugBreakpointLocator: By = By.xpath(await this.getStoppedDebugBreakpointXpathLocator(tabTitle, lineNumber));
-
         await this.driverHelper.waitVisibility(stoppedDebugBreakpointLocator, timeout);
     }
 
