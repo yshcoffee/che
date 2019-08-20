@@ -219,19 +219,16 @@ suite('Validation of debug functionality', async () => {
         await projectTree.expandPathAndOpenFileInAssociatedWorkspace(pathToJavaFolder, javaFileName);
         await editor.selectTab(javaFileName);
         await editor.moveCursorToLineAndChar(javaFileName, 34, 1);
-        await ide.sleep(2000);
         await editor.activateBreakpoint(javaFileName, 32);
     });
 
     test('Launch debug', async () => {
         await runTask('che: run-debug');
         await ide.waitNotificationAndConfirm('A new process is now listening on port 8080', 180000);
-        await ide.sleep(20000);
         await ide.waitNotificationAndOpenLink('Redirect is now enabled on port 8080', 180000);
     });
 
     test('Check content of the launched application', async () => {
-        await ide.sleep(20000);
         await previewWidget.waitContentAvailableInAssoziatedWorkspace(SpringAppLocators.springTitleLocator, 60000, 10000);
     });
 
@@ -271,7 +268,7 @@ async function closeMainWindowAndSwitchToWorkspace(mainWindowHandle: string) {
     await driverHelper.getDriver().switchTo().window(mainWindowHandle);
     await driverHelper.getDriver().close();
     await driverHelper.getDriver().switchTo().window(secondWindowHandle);
-    await driverHelper.getDriver().manage().window().maximize();
+    await driverHelper.getDriver().manage().window().setSize(TestConstants.TS_SELENIUM_RESOLUTION_WIDTH, TestConstants.TS_SELENIUM_RESOLUTION_HEIGHT);
 }
 
 async function runTask(task: string) {
