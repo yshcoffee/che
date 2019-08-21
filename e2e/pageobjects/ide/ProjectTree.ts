@@ -63,19 +63,19 @@ export class ProjectTree {
     }
 
     async waitItem(itemPath: string, timeout: number = TestConstants.TS_SELENIUM_DEFAULT_TIMEOUT) {
-        const locator: string = await this.getItemCss(itemPath);
+        const locator: string = await this.getItemWithXpath(itemPath);
         await this.driverHelper.waitVisibility(By.css(locator), timeout);
     }
 
     async waitItemDisappearance(itemPath: string,
         attempts: number = TestConstants.TS_SELENIUM_DEFAULT_ATTEMPTS,
         polling: number = TestConstants.TS_SELENIUM_DEFAULT_POLLING) {
-            const locator: string = await this.getItemCss(itemPath);
+            const locator: string = await this.getItemWithXpath(itemPath);
         await this.driverHelper.waitDisappearance(By.css(locator), attempts, polling);
     }
 
     async clickOnItem(itemPath: string, timeout: number = TestConstants.TS_SELENIUM_DEFAULT_TIMEOUT) {
-        const locator: string = await this.getItemCss(itemPath);
+        const locator: string = await this.getItemWithXpath(itemPath);
         await this.driverHelper.waitAndClick(By.css(locator), timeout);
         await this.waitItemSelected(itemPath, timeout);
 
@@ -230,7 +230,7 @@ export class ProjectTree {
         throw new error.TimeoutError('Exceeded the maximum number of checking attempts, project has not been imported');
     }
 
-    private getItemCss(itemPath: string): string {
+    private getItemWithXpath(itemPath: string): string {
         return `div[id='/projects:/projects/${itemPath}']`;
     }
 
