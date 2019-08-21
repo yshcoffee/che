@@ -88,7 +88,7 @@ suite('Language server validation', async () => {
         await projectTree.expandPathAndOpenFileInAssociatedWorkspace(pathToJavaFolder, javaFileName);
         await editor.selectTab(javaFileName);
         await ide.checkLsInitializationStart('Starting Java Language Server');
-        await ide.waitStatusBarTextAbsence('Starting Java Language Server', 600000);
+        await ide.waitStatusBarTextAbsence('Starting Java Language Server', 900000);
         await checkJavaPathCompletion();
         await ide.waitStatusBarTextAbsence('Building workspace', 360000);
     });
