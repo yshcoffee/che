@@ -230,37 +230,24 @@ export class ProjectTree {
         throw new error.TimeoutError('Exceeded the maximum number of checking attempts, project has not been imported');
     }
 
-
-   private async  getWorkspacePathEntry(): Promise<string> {
-        const nodeAttribute: string = 'data-node-id';
-        const splitDelimeter = ':';
-        const attribute: string = await this.driverHelper.waitAndGetElementAttribute(By.css(`div[${nodeAttribute}]`), nodeAttribute);
-        return attribute.split(splitDelimeter)[0] + splitDelimeter;
+    private getItemCss(itemPath: string): string {
+        return `div[id='/projects:/projects/${itemPath}']`;
     }
 
-
-    private async getItemCss( itemPath: string): Promise<string> {
-        const entry: string = await this.getWorkspacePathEntry();
-        return `div[id='${entry}/projects/${itemPath}']`;
+    private getCollapsedItemCssLocator(itemPath: string): string {
+        return `${this.getExpandIconCssLocator(itemPath)}.theia-mod-collapsed`;
     }
 
-    private async getCollapsedItemCssLocator( itemPath: string): Promise<string> {
-        const item: string = await this.getExpandIconCssLocator(itemPath);
-        return item + '.theia-mod-collapsed';
+    private getExpandedItemCssLocator(itemPath: string): string {
+        return `${this.getExpandIconCssLocator(itemPath)}:not(.theia-mod-collapsed)`;
     }
 
-    private async getExpandedItemCssLocator(itemPath: string): Promise<string> {
-        const item: string = await this.getExpandIconCssLocator(itemPath);
-        return item + ':not(.theia-mod-collapsed)';
-    }
-
-    private async getExpandIconCssLocator(itemPath: string):  Promise<string> {
-        const entry: string = await this.getWorkspacePathEntry();
-        return `div[data-node-id='${entry}/projects/${itemPath}']`;
+    private getExpandIconCssLocator(itemPath: string): string {
+        return `div[data-node-id='/projects:/projects${itemPath}']`;
     }
 
     private getTreeItemCssLocator(itemPath: string): string {
-        return `.theia-TreeNode[title='/projects/${itemPath}']`;
+        return `.theia-TreeNode[title='/projects${itemPath}']`;
     }
 
 }
