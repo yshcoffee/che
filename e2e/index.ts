@@ -36,6 +36,7 @@ export * from './pageobjects/ide/RightToolbar';
 export * from './pageobjects/ide/Terminal';
 export * from './pageobjects/ide/TopMenu';
 export * from './pageobjects/ide/WarningDialog';
+export * from './pageobjects/ide/OpenWorkspaceWidget';
 
 // pageobjects - openshift
 export * from './pageobjects/openshift/OcpLoginPage';

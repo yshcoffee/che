@@ -11,54 +11,52 @@
 import { e2eContainer } from '../../inversify.config';
 import { DriverHelper } from '../../utils/DriverHelper';
 import { CLASSES } from '../../inversify.types';
-import { Ide, RightToolbarButton } from '../../pageobjects/ide/Ide';
+import { Ide } from '../../pageobjects/ide/Ide';
 import { ProjectTree } from '../../pageobjects/ide/ProjectTree';
 import { TopMenu } from '../../pageobjects/ide/TopMenu';
-import { QuickOpenContainer } from '../../pageobjects/ide/QuickOpenContainer';
 import { Editor } from '../../pageobjects/ide/Editor';
-//import { PreviewWidget } from '../../pageobjects/ide/PreviewWidget';
+// import { PreviewWidget } from '../../pageobjects/ide/PreviewWidget';
 import { TestConstants } from '../../TestConstants';
-//import { RightToolbar } from '../../pageobjects/ide/RightToolbar';
-import { By, Key, error } from 'selenium-webdriver';
-//import { DebugView } from '../../pageobjects/ide/DebugView';
-//import { WarningDialog } from '../../pageobjects/ide/WarningDialog';
-//import { Terminal } from '../../pageobjects/ide/Terminal';
+// import { RightToolbar } from '../../pageobjects/ide/RightToolbar';
+// import { DebugView } from '../../pageobjects/ide/DebugView';
+// import { WarningDialog } from '../../pageobjects/ide/WarningDialog';
+// import { Terminal } from '../../pageobjects/ide/Terminal';
 import { OpenWorkspaceWidget } from '../../pageobjects/ide/OpenWorkspaceWidget';
-//import * as fs from 'fs';
+// import * as fs from 'fs';
 
 const driverHelper: DriverHelper = e2eContainer.get(CLASSES.DriverHelper);
 const ide: Ide = e2eContainer.get(CLASSES.Ide);
 const projectTree: ProjectTree = e2eContainer.get(CLASSES.ProjectTree);
 const topMenu: TopMenu = e2eContainer.get(CLASSES.TopMenu);
-const quickOpenContainer: QuickOpenContainer = e2eContainer.get(CLASSES.QuickOpenContainer);
+// const quickOpenContainer: QuickOpenContainer = e2eContainer.get(CLASSES.QuickOpenContainer);
 const editor: Editor = e2eContainer.get(CLASSES.Editor);
-//const previewWidget: PreviewWidget = e2eContainer.get(CLASSES.PreviewWidget);
-//const rightToolbar: RightToolbar = e2eContainer.get(CLASSES.RightToolbar);
-//const terminal: Terminal = e2eContainer.get(CLASSES.Terminal);
-//const debugView: DebugView = e2eContainer.get(CLASSES.DebugView);
-//const warningDialog: WarningDialog = e2eContainer.get(CLASSES.WarningDialog);
+// const previewWidget: PreviewWidget = e2eContainer.get(CLASSES.PreviewWidget);
+// const rightToolbar: RightToolbar = e2eContainer.get(CLASSES.RightToolbar);
+// const terminal: Terminal = e2eContainer.get(CLASSES.Terminal);
+// const debugView: DebugView = e2eContainer.get(CLASSES.DebugView);
+// const warningDialog: WarningDialog = e2eContainer.get(CLASSES.WarningDialog);
 const openWorkspaceWidget: OpenWorkspaceWidget = e2eContainer.get(CLASSES.OpenWorkspaceWidget);
 const projectName: string = 'petclinic';
 const namespace: string = TestConstants.TS_SELENIUM_USERNAME;
 const workspaceName: string = TestConstants.TS_SELENIUM_HAPPY_PATH_WORKSPACE_NAME;
 const workspaceUrl: string = `${TestConstants.TS_SELENIUM_BASE_URL}/dashboard/#/ide/${namespace}/${workspaceName}`;
 const pathToJavaFolder: string = `${projectName}/src/main/java/org/springframework/samples/petclinic`;
-//const pathToChangedJavaFileFolder: string = `${projectName}/src/main/java/org/springframework/samples/petclinic/system`;
-//const classPathFilename: string = '.classpath';
+// const pathToChangedJavaFileFolder: string = `${projectName}/src/main/java/org/springframework/samples/petclinic/system`;
+// const classPathFilename: string = '.classpath';
 const javaFileName: string = 'PetClinicApplication.java';
-//const changedJavaFileName: string = 'CrashController.java';
-const textForErrorMessageChange: string = 'HHHHHHHHHHHHH';
-//const codeNavigationClassName: string = 'SpringApplication.class';
-//const pathToYamlFolder: string = projectName;
-//const yamlFileName: string = 'devfile.yaml';
+// const changedJavaFileName: string = 'CrashController.java';
+// const textForErrorMessageChange: string = 'HHHHHHHHHHHHH';
+// const codeNavigationClassName: string = 'SpringApplication.class';
+// const pathToYamlFolder: string = projectName;
+// const yamlFileName: string = 'devfile.yaml';
 
-const SpringAppLocators = {
-    springTitleLocator: By.xpath('//div[@class=\'container-fluid\']//h2[text()=\'Welcome\']'),
-    springMenuButtonLocator: By.css('button[data-target=\'#main-navbar\']'),
-    springErrorButtonLocator: By.xpath('//div[@id=\'main-navbar\']//span[text()=\'Error\']'),
-    springErrorMessageLocator: By.xpath('//p[text()=\'Expected: controller used to ' +
-        `showcase what happens when an exception is thrown${textForErrorMessageChange}\']`)
-};
+// const SpringAppLocators = {
+//     springTitleLocator: By.xpath('//div[@class=\'container-fluid\']//h2[text()=\'Welcome\']'),
+//     springMenuButtonLocator: By.css('button[data-target=\'#main-navbar\']'),
+//     springErrorButtonLocator: By.xpath('//div[@id=\'main-navbar\']//span[text()=\'Error\']'),
+//     springErrorMessageLocator: By.xpath('//p[text()=\'Expected: controller used to ' +
+//         `showcase what happens when an exception is thrown${textForErrorMessageChange}\']`)
+// };
 
 
 suite('Validation of workspace start', async () => {
@@ -90,7 +88,7 @@ suite('Language server validation', async () => {
         await ide.checkLsInitializationStart('Starting Java Language Server');
        // await ide.waitStatusBarTextAbsence('Starting Java Language Server', 900000);
        // await checkJavaPathCompletion();
-        //await ide.waitStatusBarTextAbsence('Building workspace', 360000);
+        // await ide.waitStatusBarTextAbsence('Building workspace', 360000);
     });
 
     // test('Error highlighting', async () => {

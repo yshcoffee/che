@@ -37,6 +37,7 @@ import { MultiUserLoginPage } from '../pageobjects/login/MultiUserLoginPage';
 import { TestConstants } from '../TestConstants';
 import { OcpLoginPage } from '../pageobjects/openshift/OcpLoginPage';
 import { OcpWebConsolePage } from '../pageobjects/openshift/OcpWebConsolePage';
+import { OpenWorkspaceWidget } from '../pageobjects/ide/OpenWorkspaceWidget';
 import { OcpLoginByTempAdmin } from '../pageobjects/login/OcpLoginByTempAdmin';
 import { ITestWorkspaceUtil } from '..';
 
@@ -73,5 +74,6 @@ export function getContainer(): Container {
     e2eContainer.bind<ScreenCatcher>(CLASSES.ScreenCatcher).to(ScreenCatcher).inSingletonScope();
     e2eContainer.bind<OcpLoginPage>(CLASSES.OcpLoginPage).to(OcpLoginPage).inSingletonScope();
     e2eContainer.bind<OcpWebConsolePage>(CLASSES.OcpWebConsolePage).to(OcpWebConsolePage).inSingletonScope();
+    e2eContainer.bind<OpenWorkspaceWidget>(CLASSES.OpenWorkspaceWidget).to(OpenWorkspaceWidget).inSingletonScope();
     return e2eContainer;
 }
