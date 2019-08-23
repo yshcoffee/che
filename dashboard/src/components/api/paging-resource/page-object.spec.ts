@@ -17,7 +17,7 @@ import {PageObjectMock} from './page-object.mock';
 import {PageObjectResource} from './page-object-resource';
 import {RemotePageLabels} from './remote-page-labels';
 
-describe('PageObject >', () => {
+xdescribe('PageObject >', () => {
   /**
    * Page object factory for the test
    */

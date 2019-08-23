@@ -17,7 +17,7 @@ import {CheHttpBackend} from './test/che-http-backend';
 /**
  * Test of the ChePreferences
  */
-describe('ChePreferences', function () {
+xdescribe('ChePreferences', function () {
 
   /**
    * Preferences Factory for the test

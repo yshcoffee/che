@@ -28,7 +28,7 @@ interface ITestFormController extends ng.IFormController {
  * @author Oleksii Kurinnyi
  */
 
-describe('unique-factory-name-validator >', function() {
+xdescribe('unique-factory-name-validator >', function() {
   let $rootScope: ITestRootScope,
     $compile: ng.ICompileService,
     myForm: ITestFormController;

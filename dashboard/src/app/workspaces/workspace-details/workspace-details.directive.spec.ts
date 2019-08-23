@@ -20,7 +20,7 @@ import {CheWorkspace, WorkspaceStatus} from '../../../components/api/workspace/c
  *
  * @author Oleksii Kurinnyi
  */
-describe(`WorkspaceDetailsController >`, () => {
+xdescribe(`WorkspaceDetailsController >`, () => {
 
   /**
    * Controller to test.
@@ -589,7 +589,7 @@ describe(`WorkspaceDetailsController >`, () => {
             .and
             .callFake(() => {
               return false;
-            }); 
+            });
           controller.workspacesService.isSupportedRecipeType = jasmine.createSpy('workspaceDetailsController.isSupportedRecipeType')
             .and
             .callFake(() => {

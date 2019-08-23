@@ -17,28 +17,28 @@ import {CheFactory} from './che-factory.factory';
 /**
  * Test of the Che Factory API
  */
-describe('CheFactory', () => {
+xdescribe('CheFactory', () => {
 
 
   /**
    * User Factory for the test
    */
-  let factory;
+  let factory: CheFactory;
 
   /**
    * API builder.
    */
-  let apiBuilder;
+  let apiBuilder: CheAPIBuilder;
 
   /**
    * Backend for handling http operations
    */
-  let httpBackend;
+  let httpBackend: ng.IHttpBackendService;
 
   /**
    * Che backend
    */
-  let cheBackend;
+  let cheBackend: CheHttpBackend;
 
   /**
    *  setup module

@@ -20,7 +20,7 @@ import {CheHttpBackend} from './test/che-http-backend';
 /**
  * Test of the Che Team API
  */
-describe('CheTeam >', () => {
+xdescribe('CheTeam >', () => {
 
   /**
    * User Factory for the test

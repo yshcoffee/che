@@ -17,7 +17,7 @@ import {CheHttpBackend} from './test/che-http-backend';
 /**
  * Test of the CheProfile
  */
-describe('CheProfile', () => {
+xdescribe('CheProfile', () => {
   /**
    * Profile Factory for the test
    */

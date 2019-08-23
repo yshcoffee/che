@@ -17,7 +17,7 @@ import {CheHttpBackend} from './test/che-http-backend';
 /**
  * Test of the Codenvy User API
  */
-describe('CheUser', () => {
+xdescribe('CheUser', () => {
 
   /**
    * User Factory for the test

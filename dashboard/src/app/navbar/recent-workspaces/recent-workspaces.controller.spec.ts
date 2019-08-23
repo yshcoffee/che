@@ -19,7 +19,7 @@ import {CheBranding} from '../../../components/branding/che-branding.factory';
 /**
  * Test of the NavbarRecentWorkspacesController
  */
-describe('NavbarRecentWorkspacesController', () => {
+xdescribe('NavbarRecentWorkspacesController', () => {
   /**
    * NavbarRecentWorkspacesController
    */
