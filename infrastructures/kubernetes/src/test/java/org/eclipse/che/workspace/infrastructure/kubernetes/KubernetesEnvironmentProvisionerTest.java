@@ -30,6 +30,7 @@ import org.eclipse.che.workspace.infrastructure.kubernetes.provision.ServiceAcco
 import org.eclipse.che.workspace.infrastructure.kubernetes.provision.UniqueNamesProvisioner;
 import org.eclipse.che.workspace.infrastructure.kubernetes.provision.VcsSshKeysProvisioner;
 import org.eclipse.che.workspace.infrastructure.kubernetes.provision.env.EnvVarsConverter;
+import org.eclipse.che.workspace.infrastructure.kubernetes.provision.limits.cpu.CpuLimitRequestProvisioner;
 import org.eclipse.che.workspace.infrastructure.kubernetes.provision.limits.ram.RamLimitRequestProvisioner;
 import org.eclipse.che.workspace.infrastructure.kubernetes.provision.restartpolicy.RestartPolicyRewriter;
 import org.eclipse.che.workspace.infrastructure.kubernetes.provision.server.ServersConverter;
@@ -56,6 +57,7 @@ public class KubernetesEnvironmentProvisionerTest {
   @Mock private EnvVarsConverter envVarsProvisioner;
   @Mock private ServersConverter<KubernetesEnvironment> serversProvisioner;
   @Mock private RestartPolicyRewriter restartPolicyRewriter;
+  @Mock private CpuLimitRequestProvisioner cpuLimitProvisioner;
   @Mock private RamLimitRequestProvisioner ramLimitProvisioner;
   @Mock private LogsVolumeMachineProvisioner logsVolumeMachineProvisioner;
   @Mock private SecurityContextProvisioner securityContextProvisioner;
@@ -81,6 +83,7 @@ public class KubernetesEnvironmentProvisionerTest {
             envVarsProvisioner,
             restartPolicyRewriter,
             volumesStrategy,
+            cpuLimitProvisioner,
             ramLimitProvisioner,
             installerServersPortProvisioner,
             logsVolumeMachineProvisioner,
@@ -101,6 +104,7 @@ public class KubernetesEnvironmentProvisionerTest {
             serversProvisioner,
             envVarsProvisioner,
             restartPolicyRewriter,
+            cpuLimitProvisioner,
             ramLimitProvisioner,
             securityContextProvisioner,
             podTerminationGracePeriodProvisioner,
@@ -124,6 +128,7 @@ public class KubernetesEnvironmentProvisionerTest {
     provisionOrder.verify(volumesStrategy).provision(eq(k8sEnv), eq(runtimeIdentity));
     provisionOrder.verify(restartPolicyRewriter).provision(eq(k8sEnv), eq(runtimeIdentity));
     provisionOrder.verify(uniqueNamesProvisioner).provision(eq(k8sEnv), eq(runtimeIdentity));
+    provisionOrder.verify(cpuLimitProvisioner).provision(eq(k8sEnv), eq(runtimeIdentity));
     provisionOrder.verify(ramLimitProvisioner).provision(eq(k8sEnv), eq(runtimeIdentity));
     provisionOrder
         .verify(externalServerIngressTlsProvisioner)
