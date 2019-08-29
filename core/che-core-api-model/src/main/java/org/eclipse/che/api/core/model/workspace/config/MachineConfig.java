@@ -20,6 +20,22 @@ import java.util.Map;
  * @author Alexander Garagatyi
  */
 public interface MachineConfig {
+	/**
+	   * Name of the attribute from {@link #getAttributes()} which if present defines cpu limit of
+	   * the machine in bytes. If cpu limit is set in environment specific recipe this attribute used
+	   * in {@code MachineConfig} should override value from recipe.
+	   */
+	  String CPU_LIMIT_ATTRIBUTE = "cpuLimit";
+
+	  /**
+	   * Name of the attribute from {@link #getAttributes()} which if present defines requested cpu
+	   * allocation of the machine in bytes. If cpu request is set in environment specific recipe
+	   * this attribute used in {@code MachineConfig} should override value from recipe. If both request
+	   * and limit are defined, and cpu request is greater than the cpu limit, this value is
+	   * ignored and only limit is used
+	   */
+	  String CPU_REQUEST_ATTRIBUTE = "cpuRequest";
+	
 
   /**
    * Name of the attribute from {@link #getAttributes()} which if present defines memory limit of

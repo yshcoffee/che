@@ -14,6 +14,7 @@ package org.eclipse.che.workspace.infrastructure.kubernetes;
 import javax.inject.Inject;
 import javax.inject.Named;
 import javax.inject.Singleton;
+
 import org.eclipse.che.api.core.model.workspace.runtime.RuntimeIdentity;
 import org.eclipse.che.api.workspace.server.spi.InfrastructureException;
 import org.eclipse.che.commons.annotation.Traced;
@@ -32,6 +33,7 @@ import org.eclipse.che.workspace.infrastructure.kubernetes.provision.ServiceAcco
 import org.eclipse.che.workspace.infrastructure.kubernetes.provision.UniqueNamesProvisioner;
 import org.eclipse.che.workspace.infrastructure.kubernetes.provision.VcsSshKeysProvisioner;
 import org.eclipse.che.workspace.infrastructure.kubernetes.provision.env.EnvVarsConverter;
+import org.eclipse.che.workspace.infrastructure.kubernetes.provision.limits.cpu.CpuLimitRequestProvisioner;
 import org.eclipse.che.workspace.infrastructure.kubernetes.provision.limits.ram.RamLimitRequestProvisioner;
 import org.eclipse.che.workspace.infrastructure.kubernetes.provision.restartpolicy.RestartPolicyRewriter;
 import org.eclipse.che.workspace.infrastructure.kubernetes.provision.server.ServersConverter;
@@ -62,6 +64,7 @@ public interface KubernetesEnvironmentProvisioner<T extends KubernetesEnvironmen
     private final ServersConverter<KubernetesEnvironment> serversConverter;
     private final EnvVarsConverter envVarsConverter;
     private final RestartPolicyRewriter restartPolicyRewriter;
+    private final CpuLimitRequestProvisioner cpuLimitProvisioner;
     private final RamLimitRequestProvisioner ramLimitProvisioner;
     private final InstallerServersPortProvisioner installerServersPortProvisioner;
     private final LogsVolumeMachineProvisioner logsVolumeMachineProvisioner;
@@ -82,6 +85,7 @@ public interface KubernetesEnvironmentProvisioner<T extends KubernetesEnvironmen
         EnvVarsConverter envVarsConverter,
         RestartPolicyRewriter restartPolicyRewriter,
         WorkspaceVolumesStrategy volumesStrategy,
+        CpuLimitRequestProvisioner cpuLimitProvisioner,
         RamLimitRequestProvisioner ramLimitProvisioner,
         InstallerServersPortProvisioner installerServersPortProvisioner,
         LogsVolumeMachineProvisioner logsVolumeMachineProvisioner,
@@ -99,6 +103,7 @@ public interface KubernetesEnvironmentProvisioner<T extends KubernetesEnvironmen
       this.serversConverter = serversConverter;
       this.envVarsConverter = envVarsConverter;
       this.restartPolicyRewriter = restartPolicyRewriter;
+      this.cpuLimitProvisioner = cpuLimitProvisioner;
       this.ramLimitProvisioner = ramLimitProvisioner;
       this.installerServersPortProvisioner = installerServersPortProvisioner;
       this.logsVolumeMachineProvisioner = logsVolumeMachineProvisioner;
@@ -140,6 +145,7 @@ public interface KubernetesEnvironmentProvisioner<T extends KubernetesEnvironmen
       LOG.debug("Provisioning environment items for workspace '{}'", workspaceId);
       restartPolicyRewriter.provision(k8sEnv, identity);
       uniqueNamesProvisioner.provision(k8sEnv, identity);
+      cpuLimitProvisioner.provision(k8sEnv, identity);
       ramLimitProvisioner.provision(k8sEnv, identity);
       externalServerIngressTlsProvisioner.provision(k8sEnv, identity);
       securityContextProvisioner.provision(k8sEnv, identity);
