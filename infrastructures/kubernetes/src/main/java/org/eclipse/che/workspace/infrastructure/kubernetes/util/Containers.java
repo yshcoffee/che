@@ -116,8 +116,7 @@ public class Containers {
     container.setResources(
         resourceBuilder.addToRequests("cpu", new Quantity(limitInK8sNotion)).build());
   }
-  
-  
+
   /**
    * Returns the RAM limit in bytes, if it is present in given container otherwise 0 will be
    * returned.
