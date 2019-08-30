@@ -11,13 +11,9 @@
  */
 package org.eclipse.che.commons.test.db;
 
-import static java.nio.charset.StandardCharsets.UTF_8;
-import static org.testng.Assert.assertEquals;
 import static org.testng.Assert.assertNotNull;
 
-import com.google.common.io.Resources;
 import java.net.URL;
-import java.nio.file.Files;
 import java.nio.file.Path;
 import org.eclipse.persistence.exceptions.ExceptionHandler;
 import org.testng.annotations.Test;
@@ -51,7 +47,7 @@ public class PersistTestModuleBuilderTest {
             .getContextClassLoader()
             .getResource("org/eclipse/che/commons/test/db/test-persistence-1.xml");
     assertNotNull(url);
-    //assertEquals(new String(Files.readAllBytes(path), UTF_8), Resources.toString(url, UTF_8));
+    // assertEquals(new String(Files.readAllBytes(path), UTF_8), Resources.toString(url, UTF_8));
   }
 
   private static class MyEntity1 {}

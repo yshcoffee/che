@@ -25,13 +25,13 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 /**
- * Configures cpu attributes for a given machine, if they are not present in {@link
- * MachineConfig} the attributes are taken from recipe, when available, by the specific
- * infrastructure implementation, or from wsmaster properties as a fallback
+ * Configures cpu attributes for a given machine, if they are not present in {@link MachineConfig}
+ * the attributes are taken from recipe, when available, by the specific infrastructure
+ * implementation, or from wsmaster properties as a fallback
  *
- * <p>There are two cpu-related properties: - che.workspace.default_cpu_limit_mb - defines
- * default machine cpu limit - che.workspace.default_cpu_request_mb - defines default
- * requested machine cpu allocation
+ * <p>There are two cpu-related properties: - che.workspace.default_cpu_limit_mb - defines default
+ * machine cpu limit - che.workspace.default_cpu_request_mb - defines default requested machine cpu
+ * allocation
  *
  * <p>if default requested cpu allocation is greater then default cpu limit, requested cpu
  * allocation is set to be equal to cpu limit.
@@ -47,8 +47,7 @@ public class CpuAttributeProvisioner {
   @Inject
   public CpuAttributeProvisioner(
       @Named("che.workspace.default_cpu_limit_mb") long defaultMachineMaxCpuSizeAttribute,
-      @Named("che.workspace.default_cpu_request_mb")
-          long defaultMachineRequestCpuSizeAttribute) {
+      @Named("che.workspace.default_cpu_request_mb") long defaultMachineRequestCpuSizeAttribute) {
     // if the passed default request is greater than the default limit, request is ignored
     if (defaultMachineRequestCpuSizeAttribute > defaultMachineMaxCpuSizeAttribute) {
       defaultMachineRequestCpuSizeAttribute = defaultMachineMaxCpuSizeAttribute;
@@ -56,8 +55,7 @@ public class CpuAttributeProvisioner {
           "Requested default container cpu limit is less than default cpu request. Cpu request parameter is ignored.");
     }
 
-    this.defaultMachineMaxCpuSizeAttribute =
-        String.valueOf(defaultMachineMaxCpuSizeAttribute);
+    this.defaultMachineMaxCpuSizeAttribute = String.valueOf(defaultMachineMaxCpuSizeAttribute);
     this.defaultMachineRequestCpuSizeAttribute =
         String.valueOf(defaultMachineRequestCpuSizeAttribute);
   }
@@ -65,28 +63,24 @@ public class CpuAttributeProvisioner {
   /**
    * Configures cpu attributes, if they are missing in {@link MachineConfig}
    *
-   * <p>Note: Default cpu request and cpu will only be used if BOTH cpuLimit and
-   * cpuRequest are null or 0, otherwise the provided value will be used for both parameters.
+   * <p>Note: Default cpu request and cpu will only be used if BOTH cpuLimit and cpuRequest are null
+   * or 0, otherwise the provided value will be used for both parameters.
    *
    * @param machineConfig - given machine configuration
-   * @param cpuLimit - cpu limit parameter configured by user in specific infra recipe. Can be
+   * @param cpuLimit - cpu limit parameter configured by user in specific infra recipe. Can be null
+   *     or 0 if defaults should be used
+   * @param cpuRequest - cpu request parameter configured by user in specific infra recipe. Can be
    *     null or 0 if defaults should be used
-   * @param cpuRequest - cpu request parameter configured by user in specific infra recipe.
-   *     Can be null or 0 if defaults should be used
    */
   public void provision(
-      InternalMachineConfig machineConfig,
-      @Nullable Long cpuLimit,
-      @Nullable Long cpuRequest) {
+      InternalMachineConfig machineConfig, @Nullable Long cpuLimit, @Nullable Long cpuRequest) {
     // if both properties are not defined
-    if ((cpuLimit == null || cpuLimit <= 0)
-        && (cpuRequest == null || cpuRequest <= 0)) {
+    if ((cpuLimit == null || cpuLimit <= 0) && (cpuRequest == null || cpuRequest <= 0)) {
       cpuLimit = Long.valueOf(defaultMachineMaxCpuSizeAttribute);
       cpuRequest = Long.valueOf(defaultMachineRequestCpuSizeAttribute);
     } else if ((cpuLimit == null || cpuLimit <= 0)) { // if cpuLimit only is undefined
       cpuLimit = cpuRequest;
-    } else if ((cpuRequest == null
-        || cpuRequest <= 0)) { // if cpuRequest only is undefined
+    } else if ((cpuRequest == null || cpuRequest <= 0)) { // if cpuRequest only is undefined
       cpuRequest = cpuLimit;
     } else if (cpuRequest > cpuLimit) { // if both properties are defined, but not consistent
       cpuRequest = cpuLimit;
