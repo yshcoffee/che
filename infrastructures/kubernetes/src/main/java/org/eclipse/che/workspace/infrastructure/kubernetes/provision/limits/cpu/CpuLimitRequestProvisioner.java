@@ -56,15 +56,15 @@ public class CpuLimitRequestProvisioner implements ConfigurationProvisioner {
       for (Container container : pod.getSpec().getContainers()) {
         InternalMachineConfig machineConfig = machines.get(machineName(pod, container));
         cpuAttributeProvisioner.provision(
-            machineConfig, Containers.getRamLimit(container), Containers.getRamRequest(container));
+            machineConfig, Containers.getCpuLimit(container), Containers.getCpuRequest(container));
         final Map<String, String> attributes = machineConfig.getAttributes();
         String cpuLimitAttribute = attributes.get(CPU_LIMIT_ATTRIBUTE);
         if (cpuLimitAttribute != null) {
-          Containers.addRamLimit(container, Long.parseLong(cpuLimitAttribute));
+          Containers.addCpuLimit(container, Long.parseLong(cpuLimitAttribute));
         }
         String cpuRequestAttribute = attributes.get(CPU_REQUEST_ATTRIBUTE);
         if (cpuRequestAttribute != null) {
-          Containers.addRamRequest(container, Long.parseLong(cpuRequestAttribute));
+          Containers.addCpuRequest(container, Long.parseLong(cpuRequestAttribute));
         }
       }
     }
