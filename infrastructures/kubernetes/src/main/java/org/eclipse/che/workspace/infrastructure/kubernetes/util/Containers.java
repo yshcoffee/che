@@ -29,7 +29,7 @@ public class Containers {
    * Returns the CPU limit in bytes, if it is present in given container otherwise 0 will be
    * returned.
    */
-  public static long getCpuLimit(Container container) {
+  public static double getCpuLimit(Container container) {
     final ResourceRequirements resources = container.getResources();
     final Quantity quantity;
     if (resources != null
@@ -45,7 +45,7 @@ public class Containers {
    * Sets given CPU limit in bytes to specified container. Note if the container already contains a
    * CPU limit, it will be overridden, other resources won't be affected.
    */
-  public static void addCpuLimit(Container container, long cpuLimit) {
+  public static void addCpuLimit(Container container, double cpuLimit) {
     final ResourceRequirementsBuilder resourceBuilder;
     if (container.getResources() != null) {
       resourceBuilder = new ResourceRequirementsBuilder(container.getResources());
@@ -75,7 +75,7 @@ public class Containers {
    * Returns the CPU request in bytes, if it is present in given container otherwise 0 will be
    * returned.
    */
-  public static long getCpuRequest(Container container) {
+  public static double getCpuRequest(Container container) {
     final ResourceRequirements resources = container.getResources();
     final Quantity quantity;
     if (resources != null
@@ -91,7 +91,7 @@ public class Containers {
    * Sets given CPU request in bytes to specified container. Note if the container already contains
    * a CPU limit, it will be overridden, other resources won't be affected.
    */
-  public static void addCpuRequest(Container container, long cpuRequest) {
+  public static void addCpuRequest(Container container, double cpuRequest) {
     final ResourceRequirementsBuilder resourceBuilder;
     if (container.getResources() != null) {
       resourceBuilder = new ResourceRequirementsBuilder(container.getResources());

@@ -46,8 +46,8 @@ public class CpuAttributeProvisioner {
 
   @Inject
   public CpuAttributeProvisioner(
-      @Named("che.workspace.default_cpu_limit_mb") long defaultMachineMaxCpuSizeAttribute,
-      @Named("che.workspace.default_cpu_request_mb") long defaultMachineRequestCpuSizeAttribute) {
+      @Named("che.workspace.default_cpu_limit_mb") double defaultMachineMaxCpuSizeAttribute,
+      @Named("che.workspace.default_cpu_request_mb") double defaultMachineRequestCpuSizeAttribute) {
     // if the passed default request is greater than the default limit, request is ignored
     if (defaultMachineRequestCpuSizeAttribute > defaultMachineMaxCpuSizeAttribute) {
       defaultMachineRequestCpuSizeAttribute = defaultMachineMaxCpuSizeAttribute;
@@ -73,11 +73,11 @@ public class CpuAttributeProvisioner {
    *     null or 0 if defaults should be used
    */
   public void provision(
-      InternalMachineConfig machineConfig, @Nullable Long cpuLimit, @Nullable Long cpuRequest) {
+      InternalMachineConfig machineConfig, @Nullable Double cpuLimit, @Nullable Double cpuRequest) {
     // if both properties are not defined
     if ((cpuLimit == null || cpuLimit <= 0) && (cpuRequest == null || cpuRequest <= 0)) {
-      cpuLimit = Long.valueOf(defaultMachineMaxCpuSizeAttribute);
-      cpuRequest = Long.valueOf(defaultMachineRequestCpuSizeAttribute);
+      cpuLimit = Double.valueOf(defaultMachineMaxCpuSizeAttribute);
+      cpuRequest = Double.valueOf(defaultMachineRequestCpuSizeAttribute);
     } else if ((cpuLimit == null || cpuLimit <= 0)) { // if cpuLimit only is undefined
       cpuLimit = cpuRequest;
     } else if ((cpuRequest == null || cpuRequest <= 0)) { // if cpuRequest only is undefined

@@ -60,11 +60,11 @@ public class CpuLimitRequestProvisioner implements ConfigurationProvisioner {
         final Map<String, String> attributes = machineConfig.getAttributes();
         String cpuLimitAttribute = attributes.get(CPU_LIMIT_ATTRIBUTE);
         if (cpuLimitAttribute != null) {
-          Containers.addCpuLimit(container, Long.parseLong(cpuLimitAttribute));
+          Containers.addCpuLimit(container, Double.parseDouble(cpuLimitAttribute));
         }
         String cpuRequestAttribute = attributes.get(CPU_REQUEST_ATTRIBUTE);
         if (cpuRequestAttribute != null) {
-          Containers.addCpuRequest(container, Long.parseLong(cpuRequestAttribute));
+          Containers.addCpuRequest(container, Double.parseDouble(cpuRequestAttribute));
         }
       }
     }
