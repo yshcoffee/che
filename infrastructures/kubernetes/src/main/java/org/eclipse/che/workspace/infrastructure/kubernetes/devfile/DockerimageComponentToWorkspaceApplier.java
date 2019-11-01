@@ -140,6 +140,7 @@ public class DockerimageComponentToWorkspaceApplier implements ComponentToWorksp
             machineName,
             dockerimageComponent.getImage(),
             dockerimageComponent.getMemoryLimit(),
+            dockerimageComponent.getCpuLimit(),
             dockerimageComponent
                 .getEnv()
                 .stream()
@@ -176,6 +177,7 @@ public class DockerimageComponentToWorkspaceApplier implements ComponentToWorksp
       String name,
       String image,
       String memoryLimit,
+      Double cpuLimit,
       List<EnvVar> env,
       List<String> command,
       List<String> args) {
@@ -189,6 +191,7 @@ public class DockerimageComponentToWorkspaceApplier implements ComponentToWorksp
             .build();
 
     Containers.addRamLimit(container, memoryLimit);
+    Containers.addCpuLimit(container, cpuLimit);
     return new DeploymentBuilder()
         .withNewMetadata()
         .addToLabels(CHE_COMPONENT_NAME_LABEL, name)

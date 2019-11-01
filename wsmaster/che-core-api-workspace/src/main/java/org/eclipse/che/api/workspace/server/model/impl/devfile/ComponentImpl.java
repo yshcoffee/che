@@ -93,6 +93,9 @@ public class ComponentImpl implements Component {
   @Column(name = "memory_limit")
   private String memoryLimit;
 
+  @Column(name = "cpu_limit")
+  private Double cpuLimit;
+
   @Column(name = "mount_sources")
   private Boolean mountSources;
 
@@ -167,6 +170,7 @@ public class ComponentImpl implements Component {
       String alias,
       String image,
       String memoryLimit,
+      Double cpuLimit,
       Boolean mountSources,
       List<String> command,
       List<String> args,
@@ -178,6 +182,7 @@ public class ComponentImpl implements Component {
     this.componentId = id;
     this.image = image;
     this.memoryLimit = memoryLimit;
+    this.cpuLimit = cpuLimit;
     this.mountSources = mountSources;
     this.command = command;
     this.args = args;
@@ -205,6 +210,7 @@ public class ComponentImpl implements Component {
       List<? extends Entrypoint> entrypoints,
       String image,
       String memoryLimit,
+      Double cpuLimit,
       Boolean mountSources,
       List<String> command,
       List<String> args,
@@ -229,6 +235,7 @@ public class ComponentImpl implements Component {
     }
     this.image = image;
     this.memoryLimit = memoryLimit;
+    this.cpuLimit = cpuLimit;
     this.mountSources = mountSources;
     this.command = command;
     this.args = args;
@@ -257,6 +264,7 @@ public class ComponentImpl implements Component {
         component.getEntrypoints(),
         component.getImage(),
         component.getMemoryLimit(),
+        component.getCpuLimit(),
         component.getMountSources(),
         component.getCommand(),
         component.getArgs(),
@@ -371,6 +379,15 @@ public class ComponentImpl implements Component {
   public void setMemoryLimit(String memoryLimit) {
     this.memoryLimit = memoryLimit;
   }
+  
+  @Override
+  public Double getCpuLimit() {
+    return cpuLimit;
+  }
+
+  public void setCpuLimit(Double cpuLimit) {
+    this.cpuLimit = cpuLimit;
+  }
 
   @Override
   public Boolean getMountSources() {
@@ -460,6 +477,7 @@ public class ComponentImpl implements Component {
         && Objects.equals(referenceContent, component.referenceContent)
         && Objects.equals(image, component.image)
         && Objects.equals(memoryLimit, component.memoryLimit)
+        && Objects.equals(cpuLimit, component.cpuLimit)
         && Objects.equals(getPreferences(), component.getPreferences())
         && Objects.equals(getSelector(), component.getSelector())
         && Objects.equals(getEntrypoints(), component.getEntrypoints())
@@ -483,6 +501,7 @@ public class ComponentImpl implements Component {
         referenceContent,
         image,
         memoryLimit,
+        cpuLimit,
         getPreferences(),
         getSelector(),
         getEntrypoints(),
@@ -526,6 +545,9 @@ public class ComponentImpl implements Component {
         + '\''
         + ", memoryLimit='"
         + memoryLimit
+        + '\''
+        + ", cpuLimit='"
+        + cpuLimit
         + '\''
         + ", mountSources="
         + mountSources

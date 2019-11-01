@@ -75,16 +75,28 @@ public class CpuAttributeProvisioner {
   public void provision(
       InternalMachineConfig machineConfig, @Nullable Double cpuLimit, @Nullable Double cpuRequest) {
     // if both properties are not defined
+
+      LOG.error(
+          "[YSH/CpuAttributeProvisioner1] cpuLimit:" + cpuLimit);
+	  
     if ((cpuLimit == null || cpuLimit <= 0) && (cpuRequest == null || cpuRequest <= 0)) {
       cpuLimit = Double.valueOf(defaultMachineMaxCpuSizeAttribute);
       cpuRequest = Double.valueOf(defaultMachineRequestCpuSizeAttribute);
+
+      LOG.error(
+          "[YSH/CpuAttributeProvisioner2] cpuLimit:" + cpuLimit);
     } else if ((cpuLimit == null || cpuLimit <= 0)) { // if cpuLimit only is undefined
       cpuLimit = cpuRequest;
+
+      LOG.error(
+          "[YSH/CpuAttributeProvisioner3] cpuLimit:" + cpuLimit);
     } else if ((cpuRequest == null || cpuRequest <= 0)) { // if cpuRequest only is undefined
       cpuRequest = cpuLimit;
     } else if (cpuRequest > cpuLimit) { // if both properties are defined, but not consistent
       cpuRequest = cpuLimit;
     }
+    LOG.error(
+            "[YSH/CpuAttributeProvisioner4] cpuLimit:" + cpuLimit);
 
     final Map<String, String> attributes = machineConfig.getAttributes();
     String configuredLimit = attributes.get(CPU_LIMIT_ATTRIBUTE);
@@ -92,8 +104,13 @@ public class CpuAttributeProvisioner {
     if (isNullOrEmpty(configuredLimit) && isNullOrEmpty(configuredRequest)) {
       attributes.put(CPU_LIMIT_ATTRIBUTE, String.valueOf(cpuLimit));
       attributes.put(CPU_REQUEST_ATTRIBUTE, String.valueOf(cpuRequest));
+
+      LOG.error(
+              "[YSH/CpuAttributeProvisioner5] cpuLimit:" + configuredLimit);
     } else if (isNullOrEmpty(configuredLimit)) {
       attributes.put(CPU_LIMIT_ATTRIBUTE, configuredRequest);
+      LOG.error(
+              "[YSH/CpuAttributeProvisioner6] cpuLimit:" + configuredLimit);
     } else if (isNullOrEmpty(configuredRequest)) {
       attributes.put(CPU_REQUEST_ATTRIBUTE, configuredLimit);
     }

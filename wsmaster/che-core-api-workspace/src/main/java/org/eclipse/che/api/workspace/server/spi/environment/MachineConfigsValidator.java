@@ -12,17 +12,24 @@
 package org.eclipse.che.api.workspace.server.spi.environment;
 
 import static java.lang.String.format;
+import static org.eclipse.che.api.core.model.workspace.config.MachineConfig.CPU_LIMIT_ATTRIBUTE;
+import static org.eclipse.che.api.core.model.workspace.config.MachineConfig.CPU_REQUEST_ATTRIBUTE;
 import static org.eclipse.che.api.core.model.workspace.config.MachineConfig.MEMORY_LIMIT_ATTRIBUTE;
 import static org.eclipse.che.api.core.model.workspace.config.MachineConfig.MEMORY_REQUEST_ATTRIBUTE;
 
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.regex.Pattern;
+
 import org.eclipse.che.api.core.ValidationException;
 import org.eclipse.che.api.core.model.workspace.config.ServerConfig;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /** @author Sergii Leshchenko */
 public class MachineConfigsValidator {
+
+	  private static final Logger LOG = LoggerFactory.getLogger(MachineConfigsValidator.class);
   private static final String MACHINE_NAME_REGEXP = "[a-zA-Z0-9]+([a-zA-Z0-9_/-]*[a-zA-Z0-9])?";
   private static final Pattern MACHINE_NAME_PATTERN =
       Pattern.compile("^" + MACHINE_NAME_REGEXP + "$");
@@ -75,6 +82,10 @@ public class MachineConfigsValidator {
     if (machineConfig.getAttributes() != null) {
       String memoryLimit = machineConfig.getAttributes().get(MEMORY_LIMIT_ATTRIBUTE);
       String memoryRequest = machineConfig.getAttributes().get(MEMORY_REQUEST_ATTRIBUTE);
+      
+      LOG.error(
+          "[YSH/MachineConfigsValidator] memoryLimit:" + memoryLimit);
+      
       if (memoryLimit != null && memoryRequest != null) {
         checkArgument(
             Long.parseLong(memoryLimit) >= Long.parseLong(memoryRequest),
@@ -83,7 +94,24 @@ public class MachineConfigsValidator {
             Long.parseLong(memoryLimit),
             Long.parseLong(memoryRequest));
       }
+      
+      String cpuLimit = machineConfig.getAttributes().get(CPU_LIMIT_ATTRIBUTE);
+      String cpuRequest = machineConfig.getAttributes().get(CPU_REQUEST_ATTRIBUTE);
+
+      LOG.error(
+          "[YSH/MachineConfigsValidator] cpuLimit:" + cpuLimit);
+      
+      if (cpuLimit != null && cpuRequest != null) {
+        checkArgument(
+            Double.parseDouble(cpuLimit) >= Double.parseDouble(cpuRequest),
+            "Machine '%s' in environment contains inconsistent cpu attributes: Cpu limit: '%s', Cpu request: '%s'",
+            machineName,
+            Double.parseDouble(cpuLimit),
+            Double.parseDouble(cpuRequest));
+      }
     }
+    
+    
   }
 
   private static void checkArgument(boolean expression, String error) throws ValidationException {

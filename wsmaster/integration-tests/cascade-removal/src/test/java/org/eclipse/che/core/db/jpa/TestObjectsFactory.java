@@ -125,6 +125,7 @@ public final class TestObjectsFactory {
         singletonList(createEntrypoint()),
         "image",
         "256G",
+        0.5,
         false,
         singletonList("command"),
         singletonList("arg"),

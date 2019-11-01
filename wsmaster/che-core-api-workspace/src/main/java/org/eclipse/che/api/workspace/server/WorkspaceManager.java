@@ -173,6 +173,10 @@ public class WorkspaceManager {
 
     WorkspaceImpl workspace =
         doCreateWorkspace(devfile, accountManager.getByName(namespace), attributes, false);
+    
+    LOG.error(
+        "[YSH/WorkspaceManager/createWorkspace] cpuLimit:" + devfile.getComponents().get(1).getCpuLimit());
+    
     TracingTags.WORKSPACE_ID.set(workspace.getId());
     return workspace;
   }
@@ -566,7 +570,7 @@ public class WorkspaceManager {
 
     workspaceDao.create(workspace);
     LOG.info(
-        "Workspace '{}/{}' with id '{}' created by user '{}'",
+        "My Workspace '{}/{}' with id '{}' created by user '{}'",
         account.getName(),
         workspace.getName(),
         workspace.getId(),

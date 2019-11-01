@@ -15,6 +15,8 @@ import static com.google.common.base.Strings.isNullOrEmpty;
 import static java.lang.String.format;
 import static org.eclipse.che.api.core.model.workspace.config.MachineConfig.MEMORY_LIMIT_ATTRIBUTE;
 import static org.eclipse.che.api.core.model.workspace.config.MachineConfig.MEMORY_REQUEST_ATTRIBUTE;
+import static org.eclipse.che.api.core.model.workspace.config.MachineConfig.CPU_LIMIT_ATTRIBUTE;
+import static org.eclipse.che.api.core.model.workspace.config.MachineConfig.CPU_REQUEST_ATTRIBUTE;
 import static org.eclipse.che.api.workspace.server.SidecarToolingWorkspaceUtil.isSidecarBasedWorkspace;
 
 import java.util.Map;
@@ -149,6 +151,13 @@ public class WorkspaceValidator {
         machine.getAttributes().get(MEMORY_REQUEST_ATTRIBUTE),
         machineName);
 
+    validateDoubleAttribute(
+        CPU_LIMIT_ATTRIBUTE, machine.getAttributes().get(CPU_LIMIT_ATTRIBUTE), machineName);
+    validateDoubleAttribute(
+        CPU_REQUEST_ATTRIBUTE,
+        machine.getAttributes().get(CPU_REQUEST_ATTRIBUTE),
+        machineName);
+
     for (Entry<String, ? extends Volume> volumeEntry : machine.getVolumes().entrySet()) {
       String volumeName = volumeEntry.getKey();
       check(
@@ -176,6 +185,21 @@ public class WorkspaceValidator {
     if (attributeValue != null) {
       try {
         Long.parseLong(attributeValue);
+      } catch (NumberFormatException e) {
+        throw new ValidationException(
+            format(
+                "Value '%s' of attribute '%s' in machine '%s' is illegal",
+                attributeValue, attributeName, machineName));
+      }
+    }
+  }
+  
+
+  private void validateDoubleAttribute(
+      String attributeName, String attributeValue, String machineName) throws ValidationException {
+    if (attributeValue != null) {
+      try {
+        Double.parseDouble(attributeValue);
       } catch (NumberFormatException e) {
         throw new ValidationException(
             format(

@@ -216,7 +216,14 @@ public class WorkspaceRuntimes {
     WorkspaceConfig config = workspace.getConfig();
 
     if (workspace.getDevfile() != null) {
+
+        LOG.error(
+                "[YSH/WorkspaceRuntimes/validate] config == null");
       config = devfileConverter.convert(workspace.getDevfile());
+    }
+    else {
+        LOG.error(
+                "[YSH/WorkspaceRuntimes/validate] config != null");
     }
 
     if (envName != null && !config.getEnvironments().containsKey(envName)) {
@@ -402,20 +409,30 @@ public class WorkspaceRuntimes {
 
     WorkspaceConfig config = workspace.getConfig();
     if (config == null) {
+        LOG.error(
+                "[YSH/WorkspaceRuntimes/startAsync] config == null");
       config = devfileConverter.convert(workspace.getDevfile());
     }
-
+    else {
+    	LOG.error(
+    			"[YSH/WorkspaceRuntimes/startAsync] config != null");   
+    }
     if (envName == null) {
       envName = config.getDefaultEnv();
+      LOG.error(
+    		  "[YSH/WorkspaceRuntimes/startAsync] envName=" + envName);   
     }
-
+    
     final String ownerId = EnvironmentContext.getCurrent().getSubject().getUserId();
     final RuntimeIdentity runtimeId = new RuntimeIdentityImpl(workspaceId, envName, ownerId);
     try {
+    	// [YSH] config 
       InternalEnvironment internalEnv =
           createInternalEnvironment(
               config.getEnvironments().get(envName), config.getAttributes(), config.getCommands());
-
+      
+    
+      
       RuntimeContext runtimeContext = infrastructure.prepare(runtimeId, internalEnv);
       InternalRuntime runtime = runtimeContext.getRuntime();
 
@@ -653,8 +670,16 @@ public class WorkspaceRuntimes {
     Environment environment = null;
     WorkspaceConfig workspaceConfig = workspace.getConfig();
     if (workspaceConfig == null) {
+        LOG.error(
+            "[YSH/WorkspaceRuntimes] workspaceConfig == null");
+
       workspaceConfig = devfileConverter.convert(workspace.getDevfile());
     }
+    else {    	
+    	LOG.error(
+    			"[YSH/WorkspaceRuntimes2] workspaceConfig != null ");
+    }
+
 
     if (identity.getEnvName() != null) {
       environment = workspaceConfig.getEnvironments().get(identity.getEnvName());
@@ -698,8 +723,14 @@ public class WorkspaceRuntimes {
       throws InfrastructureException, ValidationException, NotFoundException {
     String recipeType;
     if (environment == null) {
+
+        LOG.error(
+            "[YSH/WorkspaceRuntimes/createInternalEnvironment 1]");
       recipeType = Constants.NO_ENVIRONMENT_RECIPE_TYPE;
     } else {
+
+        LOG.error(
+            "[YSH/WorkspaceRuntimes/createInternalEnvironment 2]");
       recipeType = environment.getRecipe().getType();
     }
     InternalEnvironmentFactory factory = environmentFactories.get(recipeType);
@@ -707,6 +738,8 @@ public class WorkspaceRuntimes {
       throw new NotFoundException(
           format("InternalEnvironmentFactory is not configured for recipe type: '%s'", recipeType));
     }
+        LOG.error(
+            "[YSH/WorkspaceRuntimes/createInternalEnvironment 3]");
     InternalEnvironment internalEnvironment = factory.create(environment);
     internalEnvironment.setAttributes(new HashMap<>(workspaceConfigAttributes));
     internalEnvironment.setCommands(commands.stream().map(CommandImpl::new).collect(toList()));

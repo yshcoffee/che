@@ -28,9 +28,29 @@ import static org.testng.Assert.assertEquals;
 import static org.testng.Assert.assertNotNull;
 import static org.testng.Assert.assertTrue;
 
+import java.util.HashMap;
+import java.util.Map;
+import java.util.Set;
+
+import org.eclipse.che.api.core.ValidationException;
+import org.eclipse.che.api.workspace.server.model.impl.WarningImpl;
+import org.eclipse.che.api.workspace.server.spi.environment.CpuAttributeProvisioner;
+import org.eclipse.che.api.workspace.server.spi.environment.InternalEnvironment;
+import org.eclipse.che.api.workspace.server.spi.environment.InternalMachineConfig;
+import org.eclipse.che.api.workspace.server.spi.environment.InternalRecipe;
+import org.eclipse.che.api.workspace.server.spi.environment.MemoryAttributeProvisioner;
+import org.eclipse.che.workspace.infrastructure.kubernetes.Names;
+import org.eclipse.che.workspace.infrastructure.kubernetes.environment.KubernetesEnvironment.PodData;
+import org.mockito.Mock;
+import org.mockito.testng.MockitoTestNGListener;
+import org.testng.annotations.BeforeMethod;
+import org.testng.annotations.Listeners;
+import org.testng.annotations.Test;
+
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.ImmutableSet;
+
 import io.fabric8.kubernetes.api.model.ConfigMap;
 import io.fabric8.kubernetes.api.model.ConfigMapBuilder;
 import io.fabric8.kubernetes.api.model.Container;
@@ -53,22 +73,6 @@ import io.fabric8.kubernetes.api.model.ServiceBuilder;
 import io.fabric8.kubernetes.api.model.apps.Deployment;
 import io.fabric8.kubernetes.api.model.apps.DeploymentBuilder;
 import io.fabric8.kubernetes.api.model.extensions.IngressBuilder;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.Set;
-import org.eclipse.che.api.core.ValidationException;
-import org.eclipse.che.api.workspace.server.model.impl.WarningImpl;
-import org.eclipse.che.api.workspace.server.spi.environment.InternalEnvironment;
-import org.eclipse.che.api.workspace.server.spi.environment.InternalMachineConfig;
-import org.eclipse.che.api.workspace.server.spi.environment.InternalRecipe;
-import org.eclipse.che.api.workspace.server.spi.environment.MemoryAttributeProvisioner;
-import org.eclipse.che.workspace.infrastructure.kubernetes.Names;
-import org.eclipse.che.workspace.infrastructure.kubernetes.environment.KubernetesEnvironment.PodData;
-import org.mockito.Mock;
-import org.mockito.testng.MockitoTestNGListener;
-import org.testng.annotations.BeforeMethod;
-import org.testng.annotations.Listeners;
-import org.testng.annotations.Test;
 
 /**
  * Tests {@link KubernetesEnvironmentFactory}.
@@ -89,6 +93,7 @@ public class KubernetesEnvironmentFactoryTest {
   @Mock private InternalMachineConfig machineConfig1;
   @Mock private InternalMachineConfig machineConfig2;
   @Mock private MemoryAttributeProvisioner memoryProvisioner;
+  @Mock private CpuAttributeProvisioner cpuProvisioner;
   @Mock private KubernetesRecipeParser k8sRecipeParser;
   @Mock private PodMerger podMerger;
 
@@ -98,7 +103,7 @@ public class KubernetesEnvironmentFactoryTest {
   public void setup() throws Exception {
     k8sEnvFactory =
         new KubernetesEnvironmentFactory(
-            null, null, null, k8sRecipeParser, k8sEnvValidator, memoryProvisioner, podMerger);
+            null, null, null, k8sRecipeParser, k8sEnvValidator, memoryProvisioner, cpuProvisioner, podMerger);
     lenient().when(internalEnvironment.getRecipe()).thenReturn(internalRecipe);
     machines = ImmutableMap.of(MACHINE_NAME_1, machineConfig1, MACHINE_NAME_2, machineConfig2);
   }

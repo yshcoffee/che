@@ -18,10 +18,12 @@ import static org.eclipse.che.api.core.model.workspace.config.Command.PLUGIN_ATT
 import static org.eclipse.che.api.workspace.server.devfile.Constants.COMPONENT_ALIAS_COMMAND_ATTRIBUTE;
 import static org.eclipse.che.api.workspace.server.devfile.Constants.EDITOR_COMPONENT_ALIAS_WORKSPACE_ATTRIBUTE;
 import static org.eclipse.che.api.workspace.server.devfile.Constants.EDITOR_COMPONENT_TYPE;
+import static org.eclipse.che.api.workspace.shared.Constants.SIDECAR_CPU_LIMIT_ATTR_TEMPLATE;
 import static org.eclipse.che.api.workspace.shared.Constants.SIDECAR_MEMORY_LIMIT_ATTR_TEMPLATE;
 import static org.eclipse.che.api.workspace.shared.Constants.WORKSPACE_TOOLING_EDITOR_ATTRIBUTE;
 
 import javax.inject.Inject;
+
 import org.eclipse.che.api.core.model.workspace.devfile.Component;
 import org.eclipse.che.api.workspace.server.devfile.FileContentProvider;
 import org.eclipse.che.api.workspace.server.devfile.convert.component.ComponentFQNParser;
@@ -29,6 +31,8 @@ import org.eclipse.che.api.workspace.server.devfile.convert.component.ComponentT
 import org.eclipse.che.api.workspace.server.devfile.exception.DevfileException;
 import org.eclipse.che.api.workspace.server.model.impl.WorkspaceConfigImpl;
 import org.eclipse.che.api.workspace.server.wsplugins.model.ExtendedPluginFQN;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * Applies changes on workspace config according to the specified editor component.
@@ -37,6 +41,7 @@ import org.eclipse.che.api.workspace.server.wsplugins.model.ExtendedPluginFQN;
  */
 public class EditorComponentToWorkspaceApplier implements ComponentToWorkspaceApplier {
 
+	  private static final Logger LOG = LoggerFactory.getLogger(EditorComponentToWorkspaceApplier.class);
   private final ComponentFQNParser componentFQNParser;
 
   @Inject
@@ -70,6 +75,7 @@ public class EditorComponentToWorkspaceApplier implements ComponentToWorkspaceAp
     final String editorId = editorComponent.getId();
     final String registryUrl = editorComponent.getRegistryUrl();
     final String memoryLimit = editorComponent.getMemoryLimit();
+    final Double cpuLimit = editorComponent.getCpuLimit();
 
     if (editorComponentAlias != null) {
       workspaceConfig
@@ -91,6 +97,14 @@ public class EditorComponentToWorkspaceApplier implements ComponentToWorkspaceAp
           .getAttributes()
           .put(format(SIDECAR_MEMORY_LIMIT_ATTR_TEMPLATE, fqn.getPublisherAndName()), memoryLimit);
     }
+    if (cpuLimit != null) {
+
+        LOG.error(
+            "[YSH/EditorComponentToWorkspaceApplier] cpuLimit:" + cpuLimit);
+        workspaceConfig
+            .getAttributes()
+            .put(format(SIDECAR_CPU_LIMIT_ATTR_TEMPLATE, fqn.getPublisherAndName()), Double.toString(cpuLimit));
+      }
     workspaceConfig
         .getCommands()
         .stream()

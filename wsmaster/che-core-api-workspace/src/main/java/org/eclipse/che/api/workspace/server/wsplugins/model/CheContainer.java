@@ -33,6 +33,9 @@ public class CheContainer {
 
   @JsonProperty("memoryLimit")
   private String memoryLimit = null;
+  
+  @JsonProperty("cpuLimit")
+  private Double cpuLimit = null;
 
   @JsonProperty("mountSources")
   private boolean mountSources = false;
@@ -141,6 +144,19 @@ public class CheContainer {
 
   public void setMemoryLimit(String memoryLimit) {
     this.memoryLimit = memoryLimit;
+  }
+
+  public CheContainer cpuLimit(Double cpuLimit) {
+    this.cpuLimit = cpuLimit;
+    return this;
+  }
+
+  public Double getCpuLimit() {
+    return cpuLimit;
+  }
+
+  public void setCpuLimit(Double cpuLimit) {
+    this.cpuLimit = cpuLimit;
   }
 
   public CheContainer mountSources(boolean mountSources) {

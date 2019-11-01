@@ -17,9 +17,10 @@ import static java.util.Collections.singleton;
 import static org.eclipse.che.api.workspace.server.devfile.Components.getIdentifiableComponentName;
 import static org.eclipse.che.api.workspace.server.devfile.Constants.CURRENT_API_VERSION;
 
-import com.google.common.base.Strings;
 import java.util.Map;
+
 import javax.inject.Inject;
+
 import org.eclipse.che.api.core.ServerException;
 import org.eclipse.che.api.core.model.workspace.WorkspaceConfig;
 import org.eclipse.che.api.core.model.workspace.devfile.Command;
@@ -37,6 +38,10 @@ import org.eclipse.che.api.workspace.server.model.impl.ProjectConfigImpl;
 import org.eclipse.che.api.workspace.server.model.impl.WorkspaceConfigImpl;
 import org.eclipse.che.api.workspace.server.model.impl.devfile.DevfileImpl;
 import org.eclipse.che.api.workspace.server.model.impl.devfile.ProjectImpl;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import com.google.common.base.Strings;
 
 /**
  * Helps to convert Devfile to workspace config and back.
@@ -46,6 +51,7 @@ import org.eclipse.che.api.workspace.server.model.impl.devfile.ProjectImpl;
  */
 public class DevfileConverter {
 
+	  private static final Logger LOG = LoggerFactory.getLogger(DevfileConverter.class);
   private final ProjectConverter projectConverter;
   private final CommandConverter commandConverter;
   private final Map<String, ComponentToWorkspaceApplier> componentTypeToApplier;
@@ -114,6 +120,10 @@ public class DevfileConverter {
     // note that component applier modifies commands in workspace config
     // so, commands should be already converted
     for (Component component : devfile.getComponents()) {
+
+        LOG.error(
+            "[YSH/DevfileConverter] cpuLimit:" + component.getCpuLimit());
+        
       ComponentToWorkspaceApplier applier = componentTypeToApplier.get(component.getType());
       if (applier == null) {
         throw new DevfileException(

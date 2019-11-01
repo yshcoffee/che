@@ -79,18 +79,29 @@ public class MemoryAttributeProvisioner {
       @Nullable Long memoryLimit,
       @Nullable Long memoryRequest) {
     // if both properties are not defined
+
+      LOG.error(
+          "[YSH/MemoryAttributeProvisioner1] memoryLimit:" + memoryLimit);
     if ((memoryLimit == null || memoryLimit <= 0)
         && (memoryRequest == null || memoryRequest <= 0)) {
       memoryLimit = Long.valueOf(defaultMachineMaxMemorySizeAttribute);
       memoryRequest = Long.valueOf(defaultMachineRequestMemorySizeAttribute);
+
+      LOG.error(
+          "[YSH/MemoryAttributeProvisioner2] memoryLimit:" + memoryLimit);
     } else if ((memoryLimit == null || memoryLimit <= 0)) { // if memoryLimit only is undefined
       memoryLimit = memoryRequest;
+
+      LOG.error(
+          "[YSH/MemoryAttributeProvisioner3] memoryLimit:" + memoryLimit);
     } else if ((memoryRequest == null
         || memoryRequest <= 0)) { // if memoryRequest only is undefined
       memoryRequest = memoryLimit;
     } else if (memoryRequest > memoryLimit) { // if both properties are defined, but not consistent
       memoryRequest = memoryLimit;
     }
+    LOG.error(
+            "[YSH/MemoryAttributeProvisioner4] memoryLimit:" + memoryLimit);
 
     final Map<String, String> attributes = machineConfig.getAttributes();
     String configuredLimit = attributes.get(MEMORY_LIMIT_ATTRIBUTE);
@@ -98,8 +109,13 @@ public class MemoryAttributeProvisioner {
     if (isNullOrEmpty(configuredLimit) && isNullOrEmpty(configuredRequest)) {
       attributes.put(MEMORY_LIMIT_ATTRIBUTE, String.valueOf(memoryLimit));
       attributes.put(MEMORY_REQUEST_ATTRIBUTE, String.valueOf(memoryRequest));
+      
+      LOG.error(
+              "[YSH/MemoryAttributeProvisioner5] memoryLimit:" + configuredLimit);
     } else if (isNullOrEmpty(configuredLimit)) {
       attributes.put(MEMORY_LIMIT_ATTRIBUTE, configuredRequest);
+      LOG.error(
+              "[YSH/MemoryAttributeProvisioner6] memoryLimit:" + configuredLimit);
     } else if (isNullOrEmpty(configuredRequest)) {
       attributes.put(MEMORY_REQUEST_ATTRIBUTE, configuredLimit);
     }

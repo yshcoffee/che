@@ -126,6 +126,7 @@ public final class Constants {
    * KubernetesSize}
    */
   public static final String SIDECAR_MEMORY_LIMIT_ATTR_TEMPLATE = "sidecar.%s.memory_limit";
+  public static final String SIDECAR_CPU_LIMIT_ATTR_TEMPLATE = "sidecar.%s.cpu_limit";
 
   /**
    * Describes workspace runtimes which perform start/stop of this workspace. Should be set/read

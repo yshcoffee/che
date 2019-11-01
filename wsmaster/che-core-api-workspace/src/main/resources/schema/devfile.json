@@ -243,6 +243,13 @@
                       "129M",
                       "123Mi"
                     ]
+                  },
+                  "cpuLimit": {
+                    "type": "number",
+                    "description": "Describes cpu limit for the component. You can express cpu as a plain integer or floating type",
+                    "examples": [
+                      "0.5"
+                    ]
                   }
                 }
               }
@@ -265,7 +272,8 @@
                   "id": {},
                   "reference": {},
                   "registryUrl": {},
-                  "memoryLimit": {}
+                  "memoryLimit": {},
+                  "cpuLimit": {}
                 }
               }
             },
@@ -286,6 +294,7 @@
                   "alias": {},
                   "id": {},
                   "memoryLimit": {},
+                  "cpuLimit": {},
                   "reference": {},
                   "registryUrl": {},
                   "preferences": {
@@ -415,7 +424,8 @@
               "then": {
                 "required": [
                   "image",
-                  "memoryLimit"
+                  "memoryLimit",
+                  "cpuLimit"
                 ],
                 "additionalProperties": false,
                 "properties": {
@@ -437,6 +447,13 @@
                       "129e6",
                       "129M",
                       "123Mi"
+                    ]
+                  },
+                  "cpuLimit": {
+                    "type": "number",
+                    "description": "Describes cpu limit for the component. You can express cpu as a plain integer or floating type",
+                    "examples": [
+                      "0.5"
                     ]
                   },
                   "command": {

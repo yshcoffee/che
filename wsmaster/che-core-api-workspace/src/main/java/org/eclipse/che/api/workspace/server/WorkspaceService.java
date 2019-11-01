@@ -24,22 +24,11 @@ import static org.eclipse.che.api.workspace.shared.Constants.CHE_WORKSPACE_AUTO_
 import static org.eclipse.che.api.workspace.shared.Constants.CHE_WORKSPACE_DEVFILE_REGISTRY_URL_PROPERTY;
 import static org.eclipse.che.api.workspace.shared.Constants.CHE_WORKSPACE_PLUGIN_REGISTRY_URL_PROPERTY;
 
-import com.google.common.annotations.Beta;
-import com.google.common.base.Joiner;
-import com.google.common.collect.ImmutableMap;
-import com.google.common.collect.ImmutableMap.Builder;
-import com.google.common.collect.Maps;
-import io.swagger.annotations.Api;
-import io.swagger.annotations.ApiOperation;
-import io.swagger.annotations.ApiParam;
-import io.swagger.annotations.ApiResponse;
-import io.swagger.annotations.ApiResponses;
-import io.swagger.annotations.Example;
-import io.swagger.annotations.ExampleProperty;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+
 import javax.inject.Inject;
 import javax.inject.Named;
 import javax.ws.rs.Consumes;
@@ -55,6 +44,7 @@ import javax.ws.rs.Produces;
 import javax.ws.rs.QueryParam;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
+
 import org.eclipse.che.api.core.BadRequestException;
 import org.eclipse.che.api.core.ConflictException;
 import org.eclipse.che.api.core.ForbiddenException;
@@ -91,6 +81,22 @@ import org.eclipse.che.api.workspace.shared.dto.WorkspaceConfigDto;
 import org.eclipse.che.api.workspace.shared.dto.WorkspaceDto;
 import org.eclipse.che.commons.annotation.Nullable;
 import org.eclipse.che.commons.env.EnvironmentContext;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import com.google.common.annotations.Beta;
+import com.google.common.base.Joiner;
+import com.google.common.collect.ImmutableMap;
+import com.google.common.collect.ImmutableMap.Builder;
+import com.google.common.collect.Maps;
+
+import io.swagger.annotations.Api;
+import io.swagger.annotations.ApiOperation;
+import io.swagger.annotations.ApiParam;
+import io.swagger.annotations.ApiResponse;
+import io.swagger.annotations.ApiResponses;
+import io.swagger.annotations.Example;
+import io.swagger.annotations.ExampleProperty;
 
 /**
  * Defines Workspace REST API.
@@ -102,6 +108,7 @@ import org.eclipse.che.commons.env.EnvironmentContext;
 @Path("/workspace")
 public class WorkspaceService extends Service {
 
+	  private static final Logger LOG = LoggerFactory.getLogger(WorkspaceService.class);
   private final WorkspaceManager workspaceManager;
   private final MachineTokenProvider machineTokenProvider;
   private final WorkspaceLinksGenerator linksGenerator;
@@ -280,12 +287,18 @@ public class WorkspaceService extends Service {
               // (i.e. all the validation and provisioning of the devfile will download each
               // referenced file only once per request)
               FileContentProvider.cached(devfileContentProvider));
+
+      LOG.error(
+          "[YSH/WorkspaceService] cpuLimit:" + devfileModel.getComponents().get(1).getCpuLimit());
     } catch (ValidationException x) {
       throw new BadRequestException(x.getMessage());
     }
 
     if (startAfterCreate) {
+        LOG.error(
+                "[YSH/WorkspaceService] startWorkspace");
       workspaceManager.startWorkspace(workspace.getId(), null, new HashMap<>());
+
     }
     return Response.status(201).entity(asDtoWithLinksAndToken(workspace)).build();
   }
@@ -505,6 +518,8 @@ public class WorkspaceService extends Service {
     }
 
     try {
+        LOG.error(
+                "[YSH/WorkspaceService/startFromConfig]");
       WorkspaceImpl workspace =
           workspaceManager.startWorkspace(config, namespace, isTemporary, new HashMap<>());
       return asDtoWithLinksAndToken(workspace);

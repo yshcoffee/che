@@ -85,6 +85,7 @@ public interface Component {
    * Ki
    */
   String getMemoryLimit();
+  Double getCpuLimit();
 
   /**
    * Returns true if projects sources should be mount to the component or false otherwise. It is

@@ -83,7 +83,7 @@ public class DevfileSchemaValidator {
       if (!validationErrors.isEmpty()) {
         String error = errorMessageComposer.extractMessages(validationErrors, new StringBuilder());
         throw new DevfileFormatException(
-            format("Devfile schema validation failed. Error: %s", error));
+            format("<<<<<<<<<Devfile schema validation failed. Error: %s:## %s:## %s>>>>>>>>>", error, jsonMapper.writeValueAsString(contentNode), schema.toString()));
       }
     } catch (IOException e) {
       throw new DevfileFormatException("Unable to validate Devfile. Error: " + e.getMessage());

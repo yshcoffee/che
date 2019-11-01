@@ -15,9 +15,10 @@ import static org.eclipse.che.api.core.model.workspace.config.MachineConfig.CPU_
 import static org.eclipse.che.api.core.model.workspace.config.MachineConfig.CPU_REQUEST_ATTRIBUTE;
 import static org.eclipse.che.workspace.infrastructure.kubernetes.Names.machineName;
 
-import io.fabric8.kubernetes.api.model.Container;
 import java.util.Map;
+
 import javax.inject.Inject;
+
 import org.eclipse.che.api.core.model.workspace.runtime.RuntimeIdentity;
 import org.eclipse.che.api.workspace.server.spi.InfrastructureException;
 import org.eclipse.che.api.workspace.server.spi.environment.CpuAttributeProvisioner;
@@ -28,6 +29,10 @@ import org.eclipse.che.workspace.infrastructure.kubernetes.environment.Kubernete
 import org.eclipse.che.workspace.infrastructure.kubernetes.environment.KubernetesEnvironment.PodData;
 import org.eclipse.che.workspace.infrastructure.kubernetes.provision.ConfigurationProvisioner;
 import org.eclipse.che.workspace.infrastructure.kubernetes.util.Containers;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import io.fabric8.kubernetes.api.model.Container;
 
 /**
  * Sets or overrides Kubernetes container RAM limit and request if corresponding attributes are
@@ -37,6 +42,7 @@ import org.eclipse.che.workspace.infrastructure.kubernetes.util.Containers;
  */
 public class CpuLimitRequestProvisioner implements ConfigurationProvisioner {
 
+	  private static final Logger LOG = LoggerFactory.getLogger(CpuLimitRequestProvisioner.class);
   private final CpuAttributeProvisioner cpuAttributeProvisioner;
 
   @Inject
@@ -55,6 +61,10 @@ public class CpuLimitRequestProvisioner implements ConfigurationProvisioner {
     for (PodData pod : k8sEnv.getPodsData().values()) {
       for (Container container : pod.getSpec().getContainers()) {
         InternalMachineConfig machineConfig = machines.get(machineName(pod, container));
+
+        LOG.error(
+            "[YSH/CpuLimitRequestProvisioner] cpuLimit:" + Containers.getCpuLimit(container));
+        
         cpuAttributeProvisioner.provision(
             machineConfig, Containers.getCpuLimit(container), Containers.getCpuRequest(container));
         final Map<String, String> attributes = machineConfig.getAttributes();

@@ -27,7 +27,8 @@ public class DevfileSchemaProvider {
   private SoftReference<String> schemaRef = new SoftReference<>(null);
 
   public String getSchemaContent() throws IOException {
-    String schema = schemaRef.get();
+    //String schema = schemaRef.get();
+	String schema = null;
     if (schema == null) {
       schema = loadFile();
       schemaRef = new SoftReference<>(schema);

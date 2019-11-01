@@ -11,6 +11,9 @@
  */
 package org.eclipse.che.workspace.infrastructure.kubernetes.util;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import io.fabric8.kubernetes.api.model.Container;
 import io.fabric8.kubernetes.api.model.Quantity;
 import io.fabric8.kubernetes.api.model.ResourceRequirements;
@@ -23,6 +26,7 @@ import io.fabric8.kubernetes.api.model.ResourceRequirementsBuilder;
  */
 public class Containers {
 
+	  private static final Logger LOG = LoggerFactory.getLogger(Containers.class);
   private Containers() {}
 
   /**
@@ -36,7 +40,10 @@ public class Containers {
         && resources.getLimits() != null
         && (quantity = resources.getLimits().get("cpu")) != null
         && quantity.getAmount() != null) {
-      return KubernetesSize.toBytes(quantity.getAmount());
+
+        LOG.error(
+            "[YSH/Containers] cpuLimit1:" + quantity.getAmount() + " / "+ Double.parseDouble(quantity.getAmount()));
+      return Double.parseDouble(quantity.getAmount());
     }
     return 0;
   }
@@ -52,6 +59,9 @@ public class Containers {
     } else {
       resourceBuilder = new ResourceRequirementsBuilder();
     }
+
+    LOG.error(
+        "[YSH/Containers] cpuLimit2:" + String.valueOf(cpuLimit));
     container.setResources(
         resourceBuilder.addToLimits("cpu", new Quantity(String.valueOf(cpuLimit))).build());
   }
@@ -82,7 +92,10 @@ public class Containers {
         && resources.getRequests() != null
         && (quantity = resources.getRequests().get("cpu")) != null
         && quantity.getAmount() != null) {
-      return KubernetesSize.toBytes(quantity.getAmount());
+    	
+        LOG.error(
+                "[YSH/Containers] cpuRequest1:" + quantity.getAmount() + " / "+ Double.parseDouble(quantity.getAmount()));
+      return Double.parseDouble(quantity.getAmount());
     }
     return 0;
   }
@@ -98,6 +111,8 @@ public class Containers {
     } else {
       resourceBuilder = new ResourceRequirementsBuilder();
     }
+    LOG.error(
+            "[YSH/Containers] cpuLimit2:" + String.valueOf(cpuRequest));
     container.setResources(
         resourceBuilder.addToRequests("cpu", new Quantity(String.valueOf(cpuRequest))).build());
   }

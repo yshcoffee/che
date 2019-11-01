@@ -15,16 +15,6 @@ import static java.lang.String.format;
 import static org.eclipse.che.workspace.infrastructure.kubernetes.environment.PodMerger.DEPLOYMENT_NAME_LABEL;
 import static org.eclipse.che.workspace.infrastructure.kubernetes.namespace.KubernetesObjectUtil.setSelector;
 
-import com.google.common.annotations.VisibleForTesting;
-import io.fabric8.kubernetes.api.model.ConfigMap;
-import io.fabric8.kubernetes.api.model.Container;
-import io.fabric8.kubernetes.api.model.HasMetadata;
-import io.fabric8.kubernetes.api.model.PersistentVolumeClaim;
-import io.fabric8.kubernetes.api.model.Pod;
-import io.fabric8.kubernetes.api.model.Secret;
-import io.fabric8.kubernetes.api.model.Service;
-import io.fabric8.kubernetes.api.model.apps.Deployment;
-import io.fabric8.kubernetes.api.model.extensions.Ingress;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
@@ -32,12 +22,15 @@ import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
+
 import javax.inject.Inject;
+
 import org.eclipse.che.api.core.ValidationException;
 import org.eclipse.che.api.core.model.workspace.Warning;
 import org.eclipse.che.api.installer.server.InstallerRegistry;
 import org.eclipse.che.api.workspace.server.model.impl.WarningImpl;
 import org.eclipse.che.api.workspace.server.spi.InfrastructureException;
+import org.eclipse.che.api.workspace.server.spi.environment.CpuAttributeProvisioner;
 import org.eclipse.che.api.workspace.server.spi.environment.InternalEnvironment;
 import org.eclipse.che.api.workspace.server.spi.environment.InternalEnvironmentFactory;
 import org.eclipse.che.api.workspace.server.spi.environment.InternalMachineConfig;
@@ -50,6 +43,20 @@ import org.eclipse.che.workspace.infrastructure.kubernetes.Names;
 import org.eclipse.che.workspace.infrastructure.kubernetes.Warnings;
 import org.eclipse.che.workspace.infrastructure.kubernetes.environment.KubernetesEnvironment.PodData;
 import org.eclipse.che.workspace.infrastructure.kubernetes.util.Containers;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import com.google.common.annotations.VisibleForTesting;
+
+import io.fabric8.kubernetes.api.model.ConfigMap;
+import io.fabric8.kubernetes.api.model.Container;
+import io.fabric8.kubernetes.api.model.HasMetadata;
+import io.fabric8.kubernetes.api.model.PersistentVolumeClaim;
+import io.fabric8.kubernetes.api.model.Pod;
+import io.fabric8.kubernetes.api.model.Secret;
+import io.fabric8.kubernetes.api.model.Service;
+import io.fabric8.kubernetes.api.model.apps.Deployment;
+import io.fabric8.kubernetes.api.model.extensions.Ingress;
 
 /**
  * Parses {@link InternalEnvironment} into {@link KubernetesEnvironment}.
@@ -59,9 +66,11 @@ import org.eclipse.che.workspace.infrastructure.kubernetes.util.Containers;
 public class KubernetesEnvironmentFactory
     extends InternalEnvironmentFactory<KubernetesEnvironment> {
 
+	  private static final Logger LOG = LoggerFactory.getLogger(KubernetesEnvironmentFactory.class);
   private final KubernetesRecipeParser recipeParser;
   private final KubernetesEnvironmentValidator envValidator;
   private final MemoryAttributeProvisioner memoryProvisioner;
+  private final CpuAttributeProvisioner cpuProvisioner;
   private final PodMerger podMerger;
 
   @Inject
@@ -72,11 +81,13 @@ public class KubernetesEnvironmentFactory
       KubernetesRecipeParser recipeParser,
       KubernetesEnvironmentValidator envValidator,
       MemoryAttributeProvisioner memoryProvisioner,
+      CpuAttributeProvisioner cpuProvisioner,
       PodMerger podMerger) {
     super(installerRegistry, recipeRetriever, machinesValidator);
     this.recipeParser = recipeParser;
     this.envValidator = envValidator;
     this.memoryProvisioner = memoryProvisioner;
+    this.cpuProvisioner = cpuProvisioner;
     this.podMerger = podMerger;
   }
 
@@ -101,15 +112,29 @@ public class KubernetesEnvironmentFactory
     Map<String, PersistentVolumeClaim> pvcs = new HashMap<>();
     Map<String, Secret> secrets = new HashMap<>();
     boolean isAnyIngressPresent = false;
+
+    LOG.error(
+        "[YSH/KubernetesEnvironmentFactory] 1");
+    
     for (HasMetadata object : recipeObjects) {
       checkNotNull(object.getKind(), "Environment contains object without specified kind field");
       checkNotNull(object.getMetadata(), "%s metadata must not be null", object.getKind());
       checkNotNull(object.getMetadata().getName(), "%s name must not be null", object.getKind());
 
+      LOG.error(
+          "[YSH/KubernetesEnvironmentFactory] --");
+      
       if (object instanceof Pod) {
         putInto(pods, object.getMetadata().getName(), (Pod) object);
+
+        LOG.error(
+            "[YSH/KubernetesEnvironmentFactory] " + object.getMetadata().getName() + " cpuLimit: " + pods.get(object.getMetadata().getName()).getSpec().getContainers().get(0).getResources().getLimits().get("cpu"));
+        
       } else if (object instanceof Deployment) {
         putInto(deployments, object.getMetadata().getName(), (Deployment) object);
+
+        LOG.error(
+            "[YSH/KubernetesEnvironmentFactory] deployment");
       } else if (object instanceof Service) {
         putInto(services, object.getMetadata().getName(), (Service) object);
       } else if (object instanceof Ingress) {
@@ -128,8 +153,11 @@ public class KubernetesEnvironmentFactory
       }
     }
 
+    
     if (deployments.size() + pods.size() > 1) {
       mergePods(pods, deployments, services);
+      LOG.error(
+    	        "[YSH/KubernetesEnvironmentFactory] 2");
     }
 
     if (isAnyIngressPresent) {
@@ -154,6 +182,7 @@ public class KubernetesEnvironmentFactory
             .build();
 
     addRamAttributes(k8sEnv.getMachines(), k8sEnv.getPodsData().values());
+    addCpuAttributes(k8sEnv.getMachines(), k8sEnv.getPodsData().values());
 
     envValidator.validate(k8sEnv);
 
@@ -230,12 +259,37 @@ public class KubernetesEnvironmentFactory
           machineConfig = new InternalMachineConfig();
           machines.put(machineName, machineConfig);
         }
+
+        LOG.error(
+            "[YSH] ramLimit/ramRequest" + "[" + machineName + "/" + container.getName() + "]" + 
+            		Containers.getRamLimit(container) + "/" + Containers.getRamRequest(container));
         memoryProvisioner.provision(
             machineConfig, Containers.getRamLimit(container), Containers.getRamRequest(container));
       }
     }
   }
 
+
+  @VisibleForTesting
+  void addCpuAttributes(Map<String, InternalMachineConfig> machines, Collection<PodData> pods) {
+    for (PodData pod : pods) {
+      for (Container container : pod.getSpec().getContainers()) {
+        final String machineName = Names.machineName(pod, container);
+        InternalMachineConfig machineConfig;
+        if ((machineConfig = machines.get(machineName)) == null) {
+          machineConfig = new InternalMachineConfig();
+          machines.put(machineName, machineConfig);
+        }
+
+        LOG.error(
+            "[YSH] cpuLimit/cpuRequest" + "[" + machineName + "/" + container.getName() + "]"
+            		+ Containers.getCpuLimit(container) + "/" + Containers.getCpuRequest(container));
+        cpuProvisioner.provision(
+        		machineConfig, Containers.getCpuLimit(container), Containers.getCpuRequest(container));
+      }
+    }
+  }
+  
   private void checkNotNull(Object object, String errorMessage) throws ValidationException {
     if (object == null) {
       throw new ValidationException(errorMessage);

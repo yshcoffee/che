@@ -19,6 +19,7 @@ import static org.eclipse.che.api.workspace.server.devfile.Constants.COMPONENT_A
 import static org.eclipse.che.api.workspace.server.devfile.Constants.PLUGINS_COMPONENTS_ALIASES_WORKSPACE_ATTRIBUTE;
 import static org.eclipse.che.api.workspace.server.devfile.Constants.PLUGIN_COMPONENT_TYPE;
 import static org.eclipse.che.api.workspace.shared.Constants.SIDECAR_MEMORY_LIMIT_ATTR_TEMPLATE;
+import static org.eclipse.che.api.workspace.shared.Constants.SIDECAR_CPU_LIMIT_ATTR_TEMPLATE;
 import static org.eclipse.che.api.workspace.shared.Constants.WORKSPACE_TOOLING_PLUGINS_ATTRIBUTE;
 
 import javax.inject.Inject;
@@ -95,6 +96,13 @@ public class PluginComponentToWorkspaceApplier implements ComponentToWorkspaceAp
       workspaceConfig
           .getAttributes()
           .put(format(SIDECAR_MEMORY_LIMIT_ATTR_TEMPLATE, fqn.getPublisherAndName()), memoryLimit);
+    }
+
+    Double cpuLimit = pluginComponent.getCpuLimit();
+    if (cpuLimit != null) {
+      workspaceConfig
+          .getAttributes()
+          .put(format(SIDECAR_CPU_LIMIT_ATTR_TEMPLATE, fqn.getPublisherAndName()), Double.toString(cpuLimit));
     }
 
     for (CommandImpl command : workspaceConfig.getCommands()) {

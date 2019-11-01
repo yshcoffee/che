@@ -24,19 +24,14 @@ import static org.eclipse.che.workspace.infrastructure.kubernetes.namespace.Kube
 import static org.eclipse.che.workspace.infrastructure.kubernetes.namespace.KubernetesObjectUtil.newVolume;
 import static org.eclipse.che.workspace.infrastructure.kubernetes.namespace.KubernetesObjectUtil.newVolumeMount;
 
-import io.fabric8.kubernetes.api.model.Container;
-import io.fabric8.kubernetes.api.model.HasMetadata;
-import io.fabric8.kubernetes.api.model.PersistentVolumeClaim;
-import io.fabric8.kubernetes.api.model.Pod;
-import io.fabric8.kubernetes.api.model.Volume;
-import io.fabric8.kubernetes.api.model.VolumeMount;
-import io.fabric8.kubernetes.api.model.apps.Deployment;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
+
 import javax.inject.Inject;
 import javax.inject.Named;
+
 import org.eclipse.che.api.core.model.workspace.WorkspaceConfig;
 import org.eclipse.che.api.core.model.workspace.config.Command;
 import org.eclipse.che.api.core.model.workspace.devfile.Component;
@@ -51,6 +46,16 @@ import org.eclipse.che.workspace.infrastructure.kubernetes.Names;
 import org.eclipse.che.workspace.infrastructure.kubernetes.environment.KubernetesEnvironment;
 import org.eclipse.che.workspace.infrastructure.kubernetes.environment.KubernetesEnvironment.PodData;
 import org.eclipse.che.workspace.infrastructure.kubernetes.environment.KubernetesRecipeParser;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import io.fabric8.kubernetes.api.model.Container;
+import io.fabric8.kubernetes.api.model.HasMetadata;
+import io.fabric8.kubernetes.api.model.PersistentVolumeClaim;
+import io.fabric8.kubernetes.api.model.Pod;
+import io.fabric8.kubernetes.api.model.Volume;
+import io.fabric8.kubernetes.api.model.VolumeMount;
+import io.fabric8.kubernetes.api.model.apps.Deployment;
 
 /**
  * Applies changes on workspace config according to the specified kubernetes/openshift component.
@@ -59,6 +64,7 @@ import org.eclipse.che.workspace.infrastructure.kubernetes.environment.Kubernete
  */
 public class KubernetesComponentToWorkspaceApplier implements ComponentToWorkspaceApplier {
 
+	  private static final Logger LOG = LoggerFactory.getLogger(KubernetesComponentToWorkspaceApplier.class);
   private final KubernetesRecipeParser objectsParser;
   private final KubernetesEnvironmentProvisioner k8sEnvProvisioner;
   private final String environmentType;
@@ -143,13 +149,28 @@ public class KubernetesComponentToWorkspaceApplier implements ComponentToWorkspa
     }
 
     List<PodData> podsData = getPodDatas(componentObjects);
-
+    
     estimateCommandsMachineName(workspaceConfig, k8sComponent, podsData);
 
     if (Boolean.TRUE.equals(k8sComponent.getMountSources())) {
       applyProjectsVolumes(podsData, componentObjects);
     }
 
+    for(int i=0; i<podsData.size(); i++) {
+    	PodData pod = podsData.get(i);
+    	
+    	for(Container cont : pod.getSpec().getContainers()) {
+    		LOG.error(
+    				"[YSH/KubernetesComponentToWorkspaceApplier/apply] getMemory(a): " + cont.getName() + ": " + cont.getResources().getLimits().get("memory").getAmount());
+    		LOG.error(
+    				"[YSH/KubernetesComponentToWorkspaceApplier/apply] getMemory(f): " + cont.getName() + ": " + cont.getResources().getLimits().get("memory").getFormat()); 
+    		LOG.error(
+    				"[YSH/KubernetesComponentToWorkspaceApplier/apply] getLimits(a): " + cont.getName() + ": " + cont.getResources().getLimits().get("cpu").getAmount());
+    		LOG.error(
+    				"[YSH/KubernetesComponentToWorkspaceApplier/apply] getLimits(f): " + cont.getName() + ": " + cont.getResources().getLimits().get("cpu").getFormat());    		
+    	}
+    }
+    
     applyEntrypoints(k8sComponent.getEntrypoints(), componentObjects);
 
     k8sEnvProvisioner.provision(workspaceConfig, environmentType, componentObjects, emptyMap());

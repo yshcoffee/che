@@ -102,6 +102,7 @@ CREATE TABLE devfile_component (
     reference_content      TEXT,
     image                  TEXT,
     memory_limit           VARCHAR(255),
+    cpu_limit              NUMBER,
     mount_sources          BOOLEAN,
     devfile_id             BIGINT,
 

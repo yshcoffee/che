@@ -14,13 +14,13 @@ package org.eclipse.che.api.workspace.server.spi.environment;
 import static org.eclipse.che.api.workspace.shared.Constants.CONTAINER_SOURCE_ATTRIBUTE;
 import static org.eclipse.che.api.workspace.shared.Constants.RECIPE_CONTAINER_SOURCE;
 
-import com.google.common.annotations.VisibleForTesting;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.stream.Collectors;
+
 import org.eclipse.che.api.core.ValidationException;
 import org.eclipse.che.api.core.model.workspace.Warning;
 import org.eclipse.che.api.core.model.workspace.config.Environment;
@@ -32,6 +32,10 @@ import org.eclipse.che.api.installer.shared.model.Installer;
 import org.eclipse.che.api.workspace.server.model.impl.ServerConfigImpl;
 import org.eclipse.che.api.workspace.server.spi.InfrastructureException;
 import org.eclipse.che.commons.annotation.Nullable;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import com.google.common.annotations.VisibleForTesting;
 
 /**
  * Creates a valid instance of InternalEnvironment.
@@ -49,6 +53,7 @@ import org.eclipse.che.commons.annotation.Nullable;
  */
 public abstract class InternalEnvironmentFactory<T extends InternalEnvironment> {
 
+	  private static final Logger LOG = LoggerFactory.getLogger(InternalEnvironmentFactory.class);
   private final InstallerRegistry installerRegistry;
   private final RecipeRetriever recipeRetriever;
   private final MachineConfigsValidator machinesValidator;
@@ -114,6 +119,9 @@ public abstract class InternalEnvironmentFactory<T extends InternalEnvironment> 
       }
 
       machinesValidator.validate(machines);
+
+      LOG.error(
+          "[YSH/InternalEnvironmentFactory/create] 1");
     }
 
     T internalEnv = doCreate(recipe, machines, warnings);
