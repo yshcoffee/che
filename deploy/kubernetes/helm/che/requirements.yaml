@@ -28,11 +28,11 @@ dependencies:
     repository: file://./custom-charts/che-jaeger
     version: 1.0.0
     condition: global.tracingEnabled
-  - name: prometheus
-    repository: https://kubernetes-charts.storage.googleapis.com/
-    version: ^7.4.5
-    condition: global.metricsEnabled
-  - name: grafana
-    repository: https://kubernetes-charts.storage.googleapis.com/
-    version: ^1.19.0
-    condition: global.metricsEnabled
+#  - name: prometheus
+#    repository: https://kubernetes-charts.storage.googleapis.com/
+#    version: ^7.4.5
+#    condition: global.metricsEnabled
+#  - name: grafana
+#    repository: https://kubernetes-charts.storage.googleapis.com/
+#    version: ^1.19.0
+#    condition: global.metricsEnabled
